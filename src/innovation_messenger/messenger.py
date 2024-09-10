@@ -6,7 +6,8 @@ import smtplib
 from typing import Optional, Callable, Dict
 from dataclasses import dataclass, field
 
-from innovation_messenger.base_classes.base_sender import BaseSender
+from commom.base_classes.base_sender import BaseSender
+
 
 @dataclass
 class IEmailSender:
@@ -19,6 +20,19 @@ class Messenger(BaseSender):
   def __init__(self) -> None:
     pass
   
+  @classmethod
+  def send_report(
+    cls,
+    report_channel: str,
+    **kwargs,
+  ) -> None:
+    report_channels: Dict[str, Callable] = {
+      'email': cls._send_email
+    }
+
+    report_channels[report_channel](**kwargs)
+    
+
   @classmethod
   def _send_email(
       cls, 
@@ -49,16 +63,4 @@ class Messenger(BaseSender):
         server.login(sender_email, '@ed8Q124')
         server.sendmail(sender_email, email_sender.recipient, message.as_string())
 
-  @classmethod
-  def send_report(
-    cls,
-    report_channel: str,
-    **kwargs,
-  ) -> None:
-    report_channels: Dict[str, Callable] = {
-      'email': cls._send_email
-    }
-
-    report_channels[report_channel](**kwargs)
-    
-    
+ 

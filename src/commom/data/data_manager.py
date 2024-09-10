@@ -1,14 +1,13 @@
+from commom.database.data_read import DataRead
+from commom.database.queries.query_lojas import QUERY_LOJAS
+from commom.database.queries.query_metas import QUERY_METAS
+from commom.database.queries.query_parcelas import QUERY_PARCELAS
+from commom.database.queries.query_vendas import QUERY_VENDAS
+from commom.database.queries.query_vendedores import QUERY_VENDEDORES
 import pandas as pd
 import datetime
 from typing import Tuple, Dict, Callable
 import numpy as np
-
-from innovation_messenger.database.data_read import DataRead
-from innovation_messenger.database.queries.query_lojas import QUERY_LOJAS
-from innovation_messenger.database.queries.query_metas import QUERY_METAS
-from innovation_messenger.database.queries.query_parcelas import QUERY_PARCELAS
-from innovation_messenger.database.queries.query_vendas import QUERY_VENDAS
-from innovation_messenger.database.queries.query_vendedores import QUERY_VENDEDORES
 
 class KpiDataManager:
     df_kpis_loja: pd.DataFrame

@@ -27,4 +27,4 @@ WORKDIR ./
 RUN poetry install
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["uvicorn", "src.analytics_api.api.main:fast_api", "--port", "8080", "--host", "0.0.0.0"]
+ENTRYPOINT ["uvicorn", "src.innovation_api.api.main:fast_api", "--port", "8080", "--host", "0.0.0.0"]

@@ -1,9 +1,9 @@
-from innovation_messenger.base_classes.base_generator import BaseGenerator
-from innovation_messenger.data.data_formater import KpiDataFormater
-from innovation_messenger.data_classes.report_content_data_class import IPageContent, IReportContent, IReportContentPage
-from innovation_messenger.data_classes.store_info_data_class import StoreInfo
 
-from innovation_messenger.pdf_creator import PDFGenerator
+from commom.base_classes.base_generator import BaseGenerator
+from commom.data.data_formater import KpiDataFormater
+from commom.data_classes.report_content_data_class import IPageContent, IReportContent, IReportContentPage
+from commom.data_classes.store_info_data_class import StoreInfo
+from commom.pdf_creator import PDFGenerator
 import pandas as pd
 import datetime
 from typing import Callable, List, Dict, Optional
@@ -17,7 +17,7 @@ class ReportGenerator(BaseGenerator):
     @classmethod
     def generate_report(cls, report_type: str, **kwargs) -> any:
         report_types: Dict[str, Callable] = {
-            'kpi': PDFGenerator.generate_pdf_for_dataframe
+            'kpi': PDFGenerator.from_dataframe
         }
         
         return report_types[report_type](**kwargs)
@@ -152,4 +152,3 @@ class ReportGenerator(BaseGenerator):
     def create_kpi_email_subject(store: StoreInfo, report_date_string: str) -> str:
         return f'[TESTE] Report Diário Loja: {store.marca_loja} {store.nome_loja} - {report_date_string}'
     
-    # //

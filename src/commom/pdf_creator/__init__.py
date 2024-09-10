@@ -7,7 +7,7 @@ class PDFGenerator():
     pass
   
   @classmethod
-  def generate_pdf_for_dataframe(cls, obj_report_content: IReportContent, **kwargs) -> str:
+  def from_dataframe(cls, obj_report_content: IReportContent, **kwargs) -> str:
     pdf_file = pdf()
     pdf_file.set_font("Times", size=9)
 
