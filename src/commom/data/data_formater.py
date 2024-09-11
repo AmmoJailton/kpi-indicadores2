@@ -1,8 +1,6 @@
 import datetime
 from typing import List
-from innovation_messenger.data_classes.report_content_data_class import IPageContent, IReportContent, IReportContentPage
 import pandas as pd
-from unidecode import unidecode
 
 class KpiDataFormater:
     def __init__(self) -> None:

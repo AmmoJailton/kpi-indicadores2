@@ -1,6 +1,6 @@
-from innovation_messenger.data_classes.report_content_data_class import IReportContent
-from fpdf import XPos, YPos, FPDF as pdf
+from commom.data_classes.report_content_data_class import IReportContent
 from numpy import recarray
+from fpdf import XPos, YPos, FPDF as pdf
 
 class PDFGenerator():
   def __init__(self):

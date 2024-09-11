@@ -7,7 +7,6 @@ from commom.pdf_creator import PDFGenerator
 import pandas as pd
 import datetime
 from typing import Callable, List, Dict, Optional
-
 import unidecode
 
 class ReportGenerator(BaseGenerator):
@@ -17,7 +16,7 @@ class ReportGenerator(BaseGenerator):
     @classmethod
     def generate_report(cls, report_type: str, **kwargs) -> any:
         report_types: Dict[str, Callable] = {
-            'kpi': PDFGenerator.from_dataframe
+            'kpi': PDFGenerator().from_dataframe
         }
         
         return report_types[report_type](**kwargs)

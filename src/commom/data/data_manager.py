@@ -6,7 +6,7 @@ from commom.database.queries.query_vendas import QUERY_VENDAS
 from commom.database.queries.query_vendedores import QUERY_VENDEDORES
 import pandas as pd
 import datetime
-from typing import Tuple, Dict, Callable
+from typing import Optional, Tuple, Dict, Callable
 import numpy as np
 
 class KpiDataManager:
@@ -23,6 +23,8 @@ class KpiDataManager:
         self.delta_days = delta_days
         self.yesterday_date = (datetime.datetime.today() - datetime.timedelta(days=self.delta_days))
         self.yesterday_date_str = self.yesterday_date.strftime("%Y-%m-%d")
+        self.df_vendas = pd.DataFrame()
+        
 
     @property
     def all_dataframes(self) -> Dict[str, pd.DataFrame]:
@@ -36,8 +38,23 @@ class KpiDataManager:
             'df_parcelas_with_displaycode':self.df_parcelas_with_displaycode,
             'df_nome_vendedor':self.df_nome_vendedor
         }
-
-    def fetch_and_build_datasets(self, source: str) -> bool:
+        
+    @property
+    def last_update(self) -> Optional[datetime.date]:
+        if len(self.df_vendas) > 0:
+            return self.df_vendas['invoice_date'].max()
+        return None
+    
+    @property
+    def should_fetch_datasets(self) -> bool:
+        if self.last_update is None:
+            return True
+        
+        date_diff: datetime.timedelta = datetime.date.today() - self.last_update
+        
+        return date_diff.days > 1
+    
+    def fetch_and_build_datasets(self) -> bool:
         self._fetch_data_from_bigquery()
         self._build_df_vendas_pdv()
         self._build_df_parcelas_with_displaycode()
