@@ -2,6 +2,7 @@ import inspect
 import logging
 import os
 import sys
+
 from google.oauth2 import service_account
 
 LOG_LEVELS = {
@@ -35,10 +36,14 @@ class BaseConfig(object):
 
 class ProdConfig(BaseConfig):
     """Production configuration."""
+
     ENV = "prod"
+
 
 class DevConfig(BaseConfig):
     """Development configuration."""
+
     ENV = "dev"
+
 
 config = factory(os.getenv("ENV"))

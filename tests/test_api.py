@@ -1,7 +1,6 @@
 from fastapi.testclient import TestClient
 
-from analytics_api import __version__
-from analytics_api.api.create_api import create_api
+from innovation_api.api import __version__, create_api
 
 fast_api = create_api()
 client = TestClient(fast_api)
