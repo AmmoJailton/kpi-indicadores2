@@ -3,12 +3,12 @@ import os
 from typing import List
 
 from commom.data.data_manager import KpiDataManager
+from commom.data_classes.report_content_data_class import DailyReportBody
 from commom.data_classes.store_info_data_class import StoreInfo
-from commom.report_generator.report_generator import ReportGenerator
+from commom.report_generator import ReportGenerator
 from innovation_api import __version__
 from innovation_api.typing import IEndpoint, IEndpointConfig
-from innovation_messenger.messenger import IEmailSender, Messenger
-
+from innovation_messenger import IEmailSender, Messenger
 
 class RootEndpoint(IEndpoint):
     @property
@@ -46,23 +46,33 @@ class DailyReportEndpoint(IEndpoint):
     def __init__(self) -> None:
         pass
 
-    def enviar_email_kpi_diario(self):
+    def enviar_email_kpi_diario(self, body: DailyReportBody):
         kpi_data_manager = KpiDataManager()
         
         # if kpi_data_manager.should_fetch_datasets:
         #     kpi_data_manager.fetch_and_build_datasets()
             
         dataframes = kpi_data_manager.fetch_local_datasets('./notebooks/kpi_data_manager.pkl') # mock
-        ids_loja: list[str] = ['2560', '2510'] # mock
+        
+        ids_loja = body.ids_loja
         
         reportGenerator = ReportGenerator()
 
         yesterday_date = (datetime.datetime.today() - datetime.timedelta(days=1))
         yesterday_date_str = yesterday_date.strftime("%d.%m.%Y").replace('/', '_')
 
-        for id in ids_loja:  
+        for id in ids_loja:
             store = StoreInfo(df_lojas = dataframes.df_lojas, id_loja=id)
 
+            # formated_content = reportGenerator.format_report_content(
+            #     report_type='kpi',
+            #     df_kpis_loja = kpi_data_manager.df_kpis_loja,
+            #     df_kpis_vendedor = kpi_data_manager.df_kpis_vendedor,
+            #     df_nome_vendedor = kpi_data_manager.df_nome_vendedor,
+            #     yesterday_date= yesterday_date_str,
+            #     store = store
+            # )
+            
             formated_content = reportGenerator.format_report_content(
                 report_type='kpi',
                 df_kpis_loja = dataframes.df_kpis_loja,
@@ -80,7 +90,6 @@ class DailyReportEndpoint(IEndpoint):
             emails_recipients_list = reportGenerator.get_recipients_for_report(
                 report_type='kpi',
                 store = store,
-                test_email='joao.garcia@ammovarejo.com.br'
             ) 
 
             for email_recipient in emails_recipients_list:

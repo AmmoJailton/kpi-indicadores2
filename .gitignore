@@ -92,3 +92,4 @@ target/
 .mypy_cache/
 env_variables.sh
 set_env.sh
+poetry.lock

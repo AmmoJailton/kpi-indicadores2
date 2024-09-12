@@ -13,11 +13,11 @@ class StoreInfo():
     self.marca_loja = marca_loja.title()
     self.tipo = tipo.title()
     self.regional = regional.title()
-    self.email_regional = self._get_regional_email(self.regional)
+    self.email_regional = self._get_regional_email(regional_name=self.regional)
     self.loja_id = id_loja
   
   def _get_regional_email(self, regional_name:str):
-    names_regionais = {
+    emails_regionais = {
       'luciano': 'luciano.millamonte@coteminas.com.br',
       'clarissa': 'clarissa.ferreira@ammovarejo.com.br',
       'claudio': 'claudio.oliveira@ammovarejo.com.br',
