@@ -105,5 +105,7 @@ class DailyReportEndpoint(IEndpoint):
                     email_sender=email_sender,
                 )
         
-        return {'statusCode': 201}
+        return {
+            'statusCode': 201,
+        }
   
