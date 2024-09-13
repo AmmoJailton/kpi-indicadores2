@@ -58,18 +58,18 @@ class ReportGenerator(BaseGenerator):
             df_nome_vendedor=df_nome_vendedor,
         )
 
-        if df_store_formated.size > 0:
-            filename: str = (
-                "relatorio_"
-                + store.marca_loja.replace(" ", "_")
-                + "-"
-                + store.nome_loja.replace(" ", "_")
-                + "_"
-                + yesterday_date
-            )
-            filename = unidecode.unidecode(filename)
+        filename: str = (
+            "relatorio_"
+            + store.marca_loja.replace(" ", "_")
+            + "-"
+            + store.nome_loja.replace(" ", "_")
+            + "_"
+            + yesterday_date
+        )
+        filename = unidecode.unidecode(filename)
 
-            formated_content = IReportContent(
+        if df_store_formated.size > 0:
+            return IReportContent(
                 document_file_name=f"{filename}.pdf",
                 document_content=[
                     IReportContentPage(
@@ -90,36 +90,31 @@ class ReportGenerator(BaseGenerator):
                     ),
                 ],
             )
-
-            return formated_content
         else:
-            return {
-                "document_file_name": "vazio.pdf",
-                "document_content": [
-                    # IReportContentPage
-                    {
-                        "page": "1",
-                        "content": [
-                            # IPageContent
-                            {"title": "vazio", "content": ""}
+            return IReportContent(
+                document_file_name=f"{filename}.pdf",
+                document_content=[
+                    IReportContentPage(
+                        page="1",
+                        content=[
+                            IPageContent(
+                                title=f"KPIs Loja {store.marca_loja} - {store.nome_loja} - {yesterday_date}",
+                                content="Nenhum dado encontrado",
+                            )
                         ],
-                    },
+                    ),
                 ],
-            }
+            )
 
     @classmethod
     def _get_email_sender_list(cls, store: StoreInfo, **kwargs) -> List[str]:
-        # ------
-        # Voltar as linhas comentadas abaixo
-        # ------
-
+        if "" in [store.email, store.marca_loja, store.nome_loja, store.regional, store.email_regional]:
+            return []
+        if store.regional.lower() not in store.emails_regionais():
+            return []
         # email_vinicius = 'vinicius.voltolini@ammovarejo.com.br'
         # return [store.email, store.email_regional, email_vinicius]
-
-        # ------
-        # Voltar as linhas comentadas acima e apagar o ultimo return
-        # ------
-        return ["joao.garcia@ammovarejo.com.br"]  # test only
+        return ["joao.garcia@ammovarejo.com.br"]
 
     @staticmethod
     def create_kpi_email_body(email_reg: str) -> str:

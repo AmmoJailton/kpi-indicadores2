@@ -37,7 +37,8 @@ class Messenger(BaseSender):
         sender_email = "inovacao@ammovarejo.com.br"
         message["Subject"] = email_sender.subject
         message["From"] = sender_email
-        message["To"] = email_sender.recipient
+        # message["To"] = email_sender.recipient
+        message["To"] = ",".join(email_sender.recipient)
         html_part = MIMEText(email_sender.body)
         message.attach(html_part)
 

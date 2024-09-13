@@ -67,7 +67,7 @@ class KpiDataFormater:
             df_store_formated[key] = df_store_formated[key].map(format.format)
 
             if format == format_money:
-                df_store_formated[key] = df_store_formated[key].str.replace(",", ".")
+                df_store_formated[key] = df_store_formated[key].astype(str).str.replace(",", ".")
 
         try:
             df_store_formated = df_store_formated.set_index("Período").reset_index().T[[1, 2, 0]]
@@ -158,10 +158,10 @@ class KpiDataFormater:
         mask_dia = df_vendedor["type"].isin(["Dia"])
         df_vendedor_dia = df_vendedor[mask_dia].reset_index(drop=True)
         df_vendedor_dia["normalized_net_value"] = (
-            df_vendedor_dia["net_value"] * 100 / df_vendedor_dia["net_value"].max().round(2)
+            df_vendedor_dia["net_value"] * 100 / round(df_vendedor_dia["net_value"].max(), 2)
         )
         df_vendedor_dia["net_value_share"] = (
-            df_vendedor_dia["net_value"] * 100 / df_vendedor_dia["net_value"].max().round(2)
+            df_vendedor_dia["net_value"] * 100 / round(df_vendedor_dia["net_value"].max(), 2)
         )
         df_vendedor_dia = df_nome_vendedor.merge(df_vendedor_dia, on="cpf_vendedor_inteiro").drop(
             columns="cpf_vendedor_inteiro"
@@ -206,7 +206,7 @@ class KpiDataFormater:
         for key, format in format_dict.items():
             df_vendedor_dia_formatado[key] = df_vendedor_dia_formatado[key].map(format.format)
             if format == format_money:
-                df_vendedor_dia_formatado[key] = df_vendedor_dia_formatado[key].str.replace(",", ".")
+                df_vendedor_dia_formatado[key] = df_vendedor_dia_formatado[key].astype(str).str.replace(",", ".")
 
         df_vendedor_dia_formatado = df_vendedor_dia_formatado.reset_index(drop=True).T.reset_index().T
         return df_vendedor_dia_formatado.set_index(0)

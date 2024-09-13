@@ -17,18 +17,25 @@ class PDFGenerator:
         for obj in obj_report_content.document_content:
             pdf_file.add_page(orientation="l")
             for page in obj.content:
-                cls._create_table(
-                    pdf=pdf_file, table_data=page.content.astype(str).to_records(), title=page.title, cell_width="even"
-                )
+                if type(page.content) == str:
+                    pdf_file.cell(w=0, h=5, txt=page.content, align="L")
+                else:
+                    cls._create_table(
+                        pdf=pdf_file,
+                        table_data=page.content.astype(str).to_records(),
+                        title=page.title,
+                        cell_width="even",
+                    )
                 pdf_file.ln()
 
-        pdf_file.output(f"{obj_report_content.document_file_name}.pdf")
-        return f"{obj_report_content.document_file_name}.pdf"
+        pdf_file.output(f"{obj_report_content.document_file_name}")
+        return f"{obj_report_content.document_file_name}"
 
     @classmethod
     def _get_col_widths(cls, cell_width: str, pdf: pdf, table_data, data):
         if cell_width == "even":
-            col_width = pdf.epw / len(data[0]) - 1
+            if len(data) > 0:
+                col_width = pdf.epw / len(data[0]) - 1
         elif cell_width == "uneven":
             col_widths = []
 

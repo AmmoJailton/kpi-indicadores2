@@ -175,9 +175,7 @@ class KpiDataManager:
         kpi_type: str,
     ) -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
 
-        mask_tickets = (
-            self.df_vendas_pdv["tipo_transacao"].isin(["STORE", "CUPOM"]) & self.df_vendas_pdv["is_frete"] is False
-        )
+        mask_tickets = ~(self.df_vendas_pdv["tipo_transacao"].isin(["STORE", "CUPOM"]) & self.df_vendas_pdv["is_frete"])
 
         mask_vendas = pd.Series(np.ones(self.df_vendas_pdv.shape[0]).astype(bool))
 

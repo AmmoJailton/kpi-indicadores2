@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List, Union
 
 import pandas as pd
 from pydantic import BaseModel
@@ -7,7 +8,7 @@ from pydantic import BaseModel
 @dataclass
 class IPageContent:
     title: str
-    content: pd.DataFrame
+    content: Union[pd.DataFrame, str]
 
 
 @dataclass
@@ -23,4 +24,4 @@ class IReportContent:
 
 
 class DailyReportBody(BaseModel):
-    ids_loja: list[str]
+    ids_loja: List[str]
