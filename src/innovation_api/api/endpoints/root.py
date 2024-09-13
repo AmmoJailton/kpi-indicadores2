@@ -8,7 +8,7 @@ from commom.data_classes.store_info_data_class import StoreInfo
 from commom.report_generator import ReportGenerator
 from innovation_api import __version__
 from innovation_api.typing import IEndpoint, IEndpointConfig
-from innovation_messenger import IEmailSender, Messenger
+from innovation_messenger import IEmailProperties, Messenger
 
 
 class RootEndpoint(IEndpoint):
@@ -104,7 +104,7 @@ class DailyReportEndpoint(IEndpoint):
 
             if len(emails_recipients_list) >= 1:
                 # for email_recipient in emails_recipients_list:
-                email_sender = IEmailSender(
+                email_properties = IEmailProperties(
                     subject=reportGenerator.create_kpi_email_subject(
                         store=store, report_date_string=yesterday_date_str
                     ),
@@ -113,9 +113,9 @@ class DailyReportEndpoint(IEndpoint):
                     body=reportGenerator.create_kpi_email_body(store.email_regional),
                 )
 
-                Messenger.send_report(
-                    report_channel="email",
-                    email_sender=email_sender,
+                Messenger.send_message(
+                    channel="email",
+                    email_properties=email_properties,
                 )
 
         return {

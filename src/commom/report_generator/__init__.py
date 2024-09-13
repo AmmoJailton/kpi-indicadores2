@@ -35,7 +35,7 @@ class ReportGenerator(BaseGenerator):
     @classmethod
     def get_recipients_for_report(cls, report_type: str, **kwargs) -> List[str]:
         report_types: Dict[str, Callable] = {
-            "kpi": cls._get_email_sender_list,
+            "kpi": cls._get_email_properties_list,
         }
 
         return report_types[report_type](**kwargs)
@@ -107,7 +107,7 @@ class ReportGenerator(BaseGenerator):
             )
 
     @classmethod
-    def _get_email_sender_list(cls, store: StoreInfo, **kwargs) -> List[str]:
+    def _get_email_properties_list(cls, store: StoreInfo, **kwargs) -> List[str]:
         if "" in [store.email, store.marca_loja, store.nome_loja, store.regional, store.email_regional]:
             return []
         if store.regional.lower() not in store.emails_regionais():
