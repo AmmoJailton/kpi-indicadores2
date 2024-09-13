@@ -3,6 +3,8 @@ import logging
 import os
 import sys
 
+from google.oauth2 import service_account
+
 LOG_LEVELS = {
     "notset": logging.NOTSET,
     "debug": logging.DEBUG,
@@ -24,8 +26,10 @@ def factory(env):
 
 class BaseConfig(object):
     LOG_LEVEL = LOG_LEVELS.get(str.lower(os.environ.get("LOG_LEVEL", "info")))
-    EMAIL_ACCOUNT = "inovacao@ammovarejo.com.br"
-    EMAIL_PASSWORD = "@ed8Q124"
+    GOOGLE_CREDENTIALS_FILEPATH = "/tmp/gcloud-api.json"
+    os.environ["GOOGLE_CREDENTIALS_FILEPATH"] = GOOGLE_CREDENTIALS_FILEPATH
+    credentials = service_account.Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILEPATH)
+    scope_credentials = credentials.with_scopes(["https://www.googleapis.com/auth/cloud-platform"])
 
 
 class ProdConfig(BaseConfig):
