@@ -3,7 +3,7 @@ import pickle
 import pandas as pd
 from google.cloud import bigquery
 
-from innovation_messenger.config import config
+from commom.config import config
 
 
 class DataRead:
