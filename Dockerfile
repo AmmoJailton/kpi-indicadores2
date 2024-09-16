@@ -24,7 +24,7 @@ RUN pip install poetry
 COPY . ./
 WORKDIR ./
 
-RUN ./set_env.sh
+# RUN ./set_env.sh
 
 RUN poetry install
 RUN pip install -r requirements.txt
