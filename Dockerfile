@@ -23,7 +23,7 @@ EXPOSE 8080
 ARG GCP_CREDENTIALS_SECRET_ENCODED
 ENV GCP_CREDENTIALS_SECRET_ENCODED $GCP_CREDENTIALS_SECRET_ENCODED
 
-RUN pip install poetry
+RUN pip install -U pip setuptools
 
 COPY . ./
 WORKDIR ./
@@ -32,7 +32,8 @@ RUN rm -rf notebooks
 
 ENV GOOGLE_CREDENTIALS_FILEPATH "/tmp/gcloud-api.json"
 RUN echo $GCP_CREDENTIALS_SECRET_ENCODED | base64 --decode > $GOOGLE_CREDENTIALS_FILEPATH
-RUN poetry install
 RUN pip install -r requirements.txt
+
+RUN poetry config virtualenvs.create false && poetry install --no-root
 
 ENTRYPOINT ["uvicorn", "src.innovation_api.api.main:fast_api", "--port", "8080", "--host", "0.0.0.0"]
