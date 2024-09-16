@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
-from innovation_api.api import __version__, create_api
+from innovation_api import __version__
+from innovation_api.api.create_api import create_api
 
 fast_api = create_api()
 client = TestClient(fast_api)

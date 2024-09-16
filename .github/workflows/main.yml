@@ -1,0 +1,110 @@
+name: Deploy
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+
+      - name: Install dependencies
+        id: install
+        run: |
+          echo "install python"
+          python -m pip install --upgrade pip
+          echo "install poetry"
+          pip install poetry
+          echo "install poetry with dev dependencies"
+          poetry install --with dev
+
+      - name: test
+        id: test
+        run: |
+          echo "run tests and coverage using poetry"
+          poetry run coverage run -m pytest
+          echo "run lint using poetry"
+          poetry run pylint --max-line-length=150 --disable=C0114,C0115,C0116 --fail-under 7.0 --recursive=y --enable=W ./src/*
+
+  deploy:
+    needs: build-and-test
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ github.ref == 'refs/heads/main' }} || ${{ github.ref == 'refs/heads/development' }}
+
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS_SECRET }}'
+        env:
+          GCP_CREDENTIALS_SECRET: ${{ secrets.GCP_CREDENTIALS_SECRET }}
+        if: ${{ github.ref == 'refs/heads/main' }} || ${{ github.ref == 'refs/heads/development' }}
+
+      - name: Configure Docker - Login
+        id: login
+        run: |-
+          echo "configure login"
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://us-east1-docker.pkg.dev
+        if: ${{ github.ref == 'refs/heads/main' }} || ${{ github.ref == 'refs/heads/development' }}
+
+      - name: Configure Docker - configs
+        id: configs
+        run: |-
+          echo "configure quiet"
+          gcloud auth configure-docker --quiet
+        if: ${{ github.ref == 'refs/heads/main' }} || ${{ github.ref == 'refs/heads/development' }}
+
+      - name: DEVELOPMENT - Build and Push Container
+        id: dev
+        run: |-
+          echo "script dev start"
+          sh ./deploy.sh
+          echo "script dev done"
+        env:
+          GCP_ARTIFACT_REGISTRY_REGION: ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME }}
+          GCP_APP_NAME: ${{ secrets.GCP_APP_NAME_BASE }}
+          GCLOUD_RUN_REGION: ${{ secrets.GCLOUD_RUN_REGION }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ENV: dev
+        if: ${{ github.ref == 'refs/heads/development' }}
+
+      - name: PRODUCTION - Build and Push Container
+        id: prod
+        run: |-
+          echo "script prod start"
+          ./deploy.sh
+          echo "script prod done"
+        env:
+          GCP_ARTIFACT_REGISTRY_REGION: ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME }}
+          GCP_APP_NAME: ${{ secrets.GCP_APP_NAME_BASE }}
+          GCLOUD_RUN_REGION: ${{ secrets.GCLOUD_RUN_REGION }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ENV: prod
+        if: ${{ github.ref == 'refs/heads/main' }}
