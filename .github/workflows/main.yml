@@ -17,6 +17,8 @@ jobs:
         with:
           python-version: '3.10'
           architecture: 'x64'
+        env:
+          GCP_CREDENTIALS_SECRET: ${{ secrets.GOOGLE_CREDENTIALS_FILEPATH }}
 
       - name: Install dependencies
         id: install
