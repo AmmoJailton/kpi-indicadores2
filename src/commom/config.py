@@ -26,9 +26,10 @@ def factory(env):
 
 class BaseConfig(object):
     LOG_LEVEL = LOG_LEVELS.get(str.lower(os.environ.get("LOG_LEVEL", "info")))
-    GOOGLE_CREDENTIALS_FILEPATH = "/tmp/gcloud-api.json"
-    os.environ["GOOGLE_CREDENTIALS_FILEPATH"] = GOOGLE_CREDENTIALS_FILEPATH
-    credentials = service_account.Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILEPATH)
+    # GOOGLE_CREDENTIALS_FILEPATH = "/tmp/gcloud-api.json"
+    # os.environ["GCP_CREDENTIALS_SECRET"] = GOOGLE_CREDENTIALS_FILEPATH
+    credentials = service_account.Credentials.from_service_account_file(os.environ["GCP_CREDENTIALS_SECRET"])
+    # credentials = service_account.Credentials.from_service_account_info()
     scope_credentials = credentials.with_scopes(["https://www.googleapis.com/auth/cloud-platform"])
 
 
