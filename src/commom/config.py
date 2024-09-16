@@ -29,7 +29,6 @@ class BaseConfig(object):
     GOOGLE_CREDENTIALS_FILEPATH = "/tmp/gcloud-api.json"
     # os.environ["GCP_CREDENTIALS_SECRET"] = GOOGLE_CREDENTIALS_FILEPATH
     credentials = service_account.Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILEPATH)
-    # credentials = service_account.Credentials.from_service_account_info()
     scope_credentials = credentials.with_scopes(["https://www.googleapis.com/auth/cloud-platform"])
 
 
