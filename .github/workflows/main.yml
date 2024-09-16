@@ -18,7 +18,7 @@ jobs:
           python-version: '3.10'
           architecture: 'x64'
         env:
-          GCP_CREDENTIALS_SECRET: ${{ secrets.GOOGLE_CREDENTIALS_FILEPATH }}
+          GCP_CREDENTIALS_SECRET: ${{ secrets.GCP_CREDENTIALS_SECRET }}
 
       - name: Install dependencies
         id: install
@@ -91,6 +91,7 @@ jobs:
           GCLOUD_RUN_REGION: ${{ secrets.GCLOUD_RUN_REGION }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GCP_CREDENTIALS_SECRET: ${{ secrets.GCP_CREDENTIALS_SECRET }}
+          GCP_CREDENTIALS_SECRET_ENCODED: ${{ secrets.GCP_CREDENTIALS_SECRET_ENCODED }}
           ENV: dev
         if: ${{ github.ref == 'refs/heads/development' }}
 
@@ -108,5 +109,6 @@ jobs:
           GCLOUD_RUN_REGION: ${{ secrets.GCLOUD_RUN_REGION }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GCP_CREDENTIALS_SECRET: ${{ secrets.GCP_CREDENTIALS_SECRET }}
+          GCP_CREDENTIALS_SECRET_ENCODED: ${{ secrets.GCP_CREDENTIALS_SECRET_ENCODED }}
           ENV: prod
         if: ${{ github.ref == 'refs/heads/main' }}

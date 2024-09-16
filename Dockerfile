@@ -20,20 +20,19 @@ EXPOSE 8080
 # RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 # from gcp file credentials
-# ARG GCP_CREDENTIALS_SECRET
-# ENV GCP_CREDENTIALS_SECRET $GCP_CREDENTIALS_SECRET
-
-# RUN export GOOGLE_CREDENTIALS_FILEPATH="/tmp/gcloud-api.json"
-# RUN echo $GCP_CREDENTIALS_SECRET > $GOOGLE_CREDENTIALS_FILEPATH
+ARG GCP_CREDENTIALS_SECRET_ENCODED
+ENV GCP_CREDENTIALS_SECRET_ENCODED $GCP_CREDENTIALS_SECRET_ENCODED
 
 RUN pip install poetry
 
 COPY . ./
 WORKDIR ./
 
-# RUN ./set_env.sh
+RUN rm -rf notebooks
 
+ENV GOOGLE_CREDENTIALS_FILEPATH "/tmp/gcloud-api.json"
+RUN echo $GCP_CREDENTIALS_SECRET_ENCODED | base64 --decode > $GOOGLE_CREDENTIALS_FILEPATH
 RUN poetry install
-RUN pip install -r requirements.txt
+# RUN pip install -r requirements.txt
 
 ENTRYPOINT ["uvicorn", "src.innovation_api.api.main:fast_api", "--port", "8080", "--host", "0.0.0.0"]
