@@ -90,6 +90,7 @@ jobs:
           GCP_APP_NAME: ${{ secrets.GCP_APP_NAME_BASE }}
           GCLOUD_RUN_REGION: ${{ secrets.GCLOUD_RUN_REGION }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          GCP_CREDENTIALS_SECRET: ${{ secrets.GCP_CREDENTIALS_SECRET }}
           ENV: dev
         if: ${{ github.ref == 'refs/heads/development' }}
 
@@ -106,5 +107,6 @@ jobs:
           GCP_APP_NAME: ${{ secrets.GCP_APP_NAME_BASE }}
           GCLOUD_RUN_REGION: ${{ secrets.GCLOUD_RUN_REGION }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          GCP_CREDENTIALS_SECRET: ${{ secrets.GCP_CREDENTIALS_SECRET }}
           ENV: prod
         if: ${{ github.ref == 'refs/heads/main' }}
