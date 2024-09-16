@@ -1,5 +1,5 @@
 import datetime
-from typing import Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -51,7 +51,15 @@ class KpiDataManager:
 
         return date_diff.days > 1
 
-    def fetch_and_build_datasets(self) -> bool:
+    def fetch_and_build_datasets(self, source: str, **kwargs) -> Any:
+        sources: Dict[str, Callable] = {
+            "bigquery": self.fetch_and_build_datasets_form_big_query,
+            "local": self.fetch_local_datasets,
+        }
+
+        return sources[source](**kwargs)
+
+    def fetch_and_build_datasets_form_big_query(self) -> bool:
         self._fetch_data_from_bigquery()
         self._build_df_vendas_pdv()
         self._build_df_parcelas_with_displaycode()

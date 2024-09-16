@@ -38,8 +38,14 @@ class Messenger(BaseMessenger):
         sender_email = config.EMAIL_ACCOUNT
         message["Subject"] = email_properties.subject
         message["From"] = sender_email
+        messageTo: str
+
         if isinstance(email_properties.recipient, List):
-            message["To"] = ", ".join(email_properties.recipient)
+            messageTo = ", ".join(email_properties.recipient)
+        else:
+            messageTo = email_properties.recipient
+
+        message["To"] = messageTo
         html_part = MIMEText(email_properties.body)
         message.attach(html_part)
 

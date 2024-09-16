@@ -3,7 +3,7 @@ import os
 from typing import List
 
 from commom.data.data_manager import KpiDataManager
-from commom.data_classes.report_content_data_class import DailyReportBody
+from commom.data_classes.report_content_data_class import DailyReportBody, DebugBody
 from commom.data_classes.store_info_data_class import StoreInfo
 from commom.report_generator import ReportGenerator
 from innovation_api import __version__
@@ -42,17 +42,19 @@ class TestEndpoint(IEndpoint):
 
 
 class DailyReportEndpoint(IEndpoint):
+    TAGS = ["KPI report"]
+
     @property
     def endpoints(self) -> List[IEndpointConfig]:
         return [
             IEndpointConfig(
-                route="/dailyreport", class_method=self.enviar_email_kpi_diario, rest_method="POST", tags=["KPI report"]
+                route="/dailyreport", class_method=self.send_kpi_daily_mail, rest_method="POST", tags=self.TAGS
             ),
             IEndpointConfig(
                 route="/dailyreport-all",
-                class_method=self.enviar_email_kpi_diario_all,
+                class_method=self.send_kpi_daily_mail_all,
                 rest_method="POST",
-                tags=["KPI report"],
+                tags=self.TAGS,
             ),
         ]
 
@@ -60,11 +62,13 @@ class DailyReportEndpoint(IEndpoint):
         self.kpi_data_manager = KpiDataManager()
         pass
 
-    def enviar_email_kpi_diario(self, body: DailyReportBody):
-        # if kpi_data_manager.should_fetch_datasets:
-        #     kpi_data_manager.fetch_and_build_datasets()
-
-        dataframes = self.kpi_data_manager.fetch_local_datasets("./notebooks/kpi_data_manager2.pkl")  # mock
+    def send_kpi_daily_mail(self, body: DailyReportBody):
+        if body.debug_mode:
+            self.kpi_data_manager = self.kpi_data_manager.fetch_and_build_datasets(
+                source="local", file_path="./notebooks/kpi_data_manager2.pkl"
+            )
+        elif self.kpi_data_manager.should_fetch_datasets:
+            self.kpi_data_manager.fetch_and_build_datasets(source="bigquery")
 
         ids_loja = body.ids_loja
 
@@ -74,41 +78,33 @@ class DailyReportEndpoint(IEndpoint):
         yesterday_date_str = yesterday_date.strftime("%d.%m.%Y").replace("/", "_")
 
         for id in ids_loja:
-            # store = StoreInfo(df_lojas=self.kpi_data_manager.df_lojas, id_loja=id)
-            store = StoreInfo(df_lojas=dataframes.df_lojas, id_loja=id)
-
-            # formated_content = reportGenerator.format_report_content(
-            #     report_type='kpi',
-            #     df_kpis_loja = self.kpi_data_manager.df_kpis_loja,
-            #     df_kpis_vendedor = self.kpi_data_manager.df_kpis_vendedor,
-            #     df_nome_vendedor = self.kpi_data_manager.df_nome_vendedor,
-            #     yesterday_date= yesterday_date_str,
-            #     store = store
-            # )
+            store = StoreInfo(df_lojas=self.kpi_data_manager.df_lojas, id_loja=id)
 
             formated_content = reportGenerator.format_report_content(
                 report_type="kpi",
-                df_kpis_loja=dataframes.df_kpis_loja,
-                df_kpis_vendedor=dataframes.df_kpis_vendedor,
-                df_nome_vendedor=dataframes.df_nome_vendedor,
+                df_kpis_loja=self.kpi_data_manager.df_kpis_loja,
+                df_kpis_vendedor=self.kpi_data_manager.df_kpis_vendedor,
+                df_nome_vendedor=self.kpi_data_manager.df_nome_vendedor,
                 yesterday_date=yesterday_date_str,
                 store=store,
             )
 
             file_name = reportGenerator.generate_report(report_type="kpi", obj_report_content=formated_content)
 
-            emails_recipients_list = reportGenerator.get_recipients_for_report(
-                report_type="kpi",
-                store=store,
-            )
+            if len(body.custom_recipients) > 0:
+                emails_recipients_list = body.custom_recipients
+            else:
+                emails_recipients_list = reportGenerator.get_recipients_for_report(
+                    report_type="kpi",
+                    store=store,
+                )
 
             if len(emails_recipients_list) >= 1:
-                # for email_recipient in emails_recipients_list:
                 email_properties = IEmailProperties(
                     subject=reportGenerator.create_kpi_email_subject(
                         store=store, report_date_string=yesterday_date_str
                     ),
-                    recipient=",".join(emails_recipients_list),
+                    recipient=emails_recipients_list,
                     file_name=file_name,
                     body=reportGenerator.create_kpi_email_body(store.email_regional),
                 )
@@ -123,14 +119,14 @@ class DailyReportEndpoint(IEndpoint):
             "recipients": emails_recipients_list,
         }
 
-    def enviar_email_kpi_diario_all(self):
-        dataframes = self.kpi_data_manager.fetch_local_datasets("./notebooks/kpi_data_manager2.pkl")  # mock
-        self.kpi_data_manager = dataframes  # mock
+    def send_kpi_daily_mail_all(self, body: DebugBody):
+        self.kpi_data_manager.fetch_and_build_datasets(source="local", file_path="./notebooks/kpi_data_manager2.pkl")
+        # self.kpi_data_manager.fetch_and_build_datasets()
 
         mask_ativa = self.kpi_data_manager.df_lojas["ativa"]
 
         id_lojas: List[str] = list(self.kpi_data_manager.df_lojas[mask_ativa]["loja_group_code"].unique())
 
-        body = DailyReportBody(ids_loja=id_lojas)
+        body = DailyReportBody(ids_loja=id_lojas, debug_mode=body.debug_mode)
 
-        self.enviar_email_kpi_diario(body=body)
+        self.send_kpi_daily_mail(body=body)

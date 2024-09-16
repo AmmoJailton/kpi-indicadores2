@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Optional, Union
 
 import pandas as pd
 from pydantic import BaseModel
@@ -23,5 +23,10 @@ class IReportContent:
     document_content: list[IReportContentPage]
 
 
-class DailyReportBody(BaseModel):
+class DebugBody(BaseModel):
+    debug_mode: Optional[bool] = True
+
+
+class DailyReportBody(DebugBody):
     ids_loja: List[str]
+    custom_recipients: Optional[List[str]] = []
