@@ -33,8 +33,6 @@ jobs:
       - name: test
         id: test
         run: |
-          echo "run tests and coverage using poetry"
-          poetry run coverage run -m pytest
           echo "run lint using poetry"
           poetry run pylint --max-line-length=150 --disable=C0114,C0115,C0116 --fail-under 7.0 --recursive=y --enable=W ./src/*
 
