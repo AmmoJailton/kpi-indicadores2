@@ -63,19 +63,19 @@ class DailyReportEndpoint(IEndpoint):
         pass
 
     def send_kpi_daily_mail(self, body: DailyReportBody):
+        reportGenerator = ReportGenerator()
+        messenger = Messenger()
+        ids_loja = body.ids_loja
+
+        yesterday_date = datetime.datetime.today() - datetime.timedelta(days=1)
+        yesterday_date_str = yesterday_date.strftime("%d.%m.%Y").replace("/", "_")
+
         if body.debug_mode:
             self.kpi_data_manager = self.kpi_data_manager.fetch_and_build_datasets(
                 source="local", file_path="./notebooks/kpi_data_manager.pkl"
             )
         elif self.kpi_data_manager.should_fetch_datasets:
             self.kpi_data_manager.fetch_and_build_datasets(source="bigquery")
-
-        ids_loja = body.ids_loja
-
-        reportGenerator = ReportGenerator()
-
-        yesterday_date = datetime.datetime.today() - datetime.timedelta(days=1)
-        yesterday_date_str = yesterday_date.strftime("%d.%m.%Y").replace("/", "_")
 
         for id in ids_loja:
             store = StoreInfo(df_lojas=self.kpi_data_manager.df_lojas, id_loja=id)
@@ -109,7 +109,7 @@ class DailyReportEndpoint(IEndpoint):
                     body=reportGenerator.create_kpi_email_body(store.email_regional),
                 )
 
-                Messenger.send_message(
+                messenger.send_message(
                     channel="email",
                     email_properties=email_properties,
                 )

@@ -24,8 +24,8 @@ def factory(env):
 
 class BaseConfig(object):
     LOG_LEVEL = LOG_LEVELS.get(str.lower(os.environ.get("LOG_LEVEL", "info")))
-    EMAIL_ACCOUNT = "inovacao@ammovarejo.com.br"
-    EMAIL_PASSWORD = "@ed8Q124"
+    EMAIL_ACCOUNT = os.getenv("EMAIL_SENDER_ACCOUNT")
+    EMAIL_PASSWORDS = os.getenv("EMAIL_PASSWORDS")
 
 
 class ProdConfig(BaseConfig):

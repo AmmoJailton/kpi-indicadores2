@@ -92,6 +92,8 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GCP_CREDENTIALS_SECRET: ${{ secrets.GCP_CREDENTIALS_SECRET }}
           GCP_CREDENTIALS_SECRET_ENCODED: ${{ secrets.GCP_CREDENTIALS_SECRET_ENCODED }}
+          EMAIL_SENDER_ACCOUNT: ${{ secrets.EMAIL_SENDER_ACCOUNT }}
+          EMAIL_PASSWORDS: ${{ secrets.EMAIL_PASSWORDS }}
           ENV: dev
         if: ${{ github.ref == 'refs/heads/development' }}
 
@@ -110,5 +112,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GCP_CREDENTIALS_SECRET: ${{ secrets.GCP_CREDENTIALS_SECRET }}
           GCP_CREDENTIALS_SECRET_ENCODED: ${{ secrets.GCP_CREDENTIALS_SECRET_ENCODED }}
+          EMAIL_SENDER_ACCOUNT: ${{ secrets.EMAIL_SENDER_ACCOUNT }}
+          EMAIL_PASSWORDS: ${{ secrets.EMAIL_PASSWORDS }}
           ENV: prod
         if: ${{ github.ref == 'refs/heads/main' }}

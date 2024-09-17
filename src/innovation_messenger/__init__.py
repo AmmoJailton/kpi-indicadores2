@@ -4,7 +4,7 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from commom.base_classes.base_sender import BaseMessenger
 from innovation_messenger.config import config
@@ -19,25 +19,26 @@ class IEmailProperties:
 
 
 class Messenger(BaseMessenger):
+    sender_email = config.EMAIL_ACCOUNT
+    sender_password = ""
+
     def __init__(self) -> None:
+        self.get_sender_password()
         pass
 
-    @classmethod
     def send_message(
-        cls,
+        self,
         channel: str,
         **kwargs,
-    ) -> None:
-        channels: Dict[str, Callable] = {"email": cls._send_email}
+    ) -> Any:
+        channels: Dict[str, Callable] = {"email": self._send_email}
 
-        channels[channel](**kwargs)
+        return channels[channel](**kwargs)
 
-    @classmethod
-    def _send_email(cls, email_properties: IEmailProperties, **kwargs):
+    def _send_email(self, email_properties: IEmailProperties, **kwargs) -> bool:
         message = MIMEMultipart()
-        sender_email = config.EMAIL_ACCOUNT
         message["Subject"] = email_properties.subject
-        message["From"] = sender_email
+        message["From"] = self.sender_email
         messageTo: str
 
         if isinstance(email_properties.recipient, List):
@@ -62,5 +63,20 @@ class Messenger(BaseMessenger):
             message.attach(part)
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(sender_email, config.EMAIL_PASSWORD)
-            server.sendmail(sender_email, email_properties.recipient, message.as_string())
+            try:
+                server.login(user=self.sender_email, password=self.sender_password)
+                server.sendmail(self.sender_email, email_properties.recipient, message.as_string())
+                return True
+            except Exception:
+                return False
+
+    def get_sender_password(self) -> None:
+        password_list = config.EMAIL_PASSWORDS.split(",")
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            for password in password_list:
+                try:
+                    server.login(user=config.EMAIL_ACCOUNT, password=password)
+                    self.sender_password = password
+                except smtplib.SMTPAuthenticationError:
+                    print("Usuário ou senha incorretos.")
