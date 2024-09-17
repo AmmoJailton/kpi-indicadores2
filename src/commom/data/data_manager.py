@@ -69,6 +69,7 @@ class KpiDataManager:
 
         self.df_nome_vendedor = self.df_vendedores[["name", "cpf"]]
         self.df_nome_vendedor.columns = ["vendedor", "cpf_vendedor_inteiro"]
+        self.df_nome_vendedor["vendedor"] = self.df_nome_vendedor["vendedor"].apply(self._abreviate_vendedor_name)
 
         kpis_loja_dict = {}
 
@@ -288,3 +289,19 @@ class KpiDataManager:
 
     def fetch_local_datasets(self, file_path: str) -> pd.DataFrame:
         return DataRead.from_local_pickle(file_path)
+
+    def _abreviate_vendedor_name(self, full_name: str) -> str:
+        full_name = full_name.replace("   ", " ")
+        full_name = full_name.replace("  ", " ")
+
+        if len(full_name.title().split(" ")) > 1:
+            splited_name = full_name.title().split(" ")
+            nome_completo = splited_name[0]
+            splited_name.pop(0)
+
+            for name in splited_name:
+                nome_completo += " " + name[0] + "."
+
+            return nome_completo
+
+        return full_name

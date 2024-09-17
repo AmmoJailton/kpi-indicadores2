@@ -90,7 +90,10 @@ class DailyReportEndpoint(IEndpoint):
                 store=store,
             )
 
-            file_name = reportGenerator.generate_report(report_type="kpi", obj_report_content=formated_content)
+            file_name = ""
+
+            if formated_content.document_file_name != "":
+                file_name = reportGenerator.generate_report(report_type="kpi", obj_report_content=formated_content)
 
             if len(body.custom_recipients) > 0:
                 emails_recipients_list = body.custom_recipients
@@ -101,13 +104,19 @@ class DailyReportEndpoint(IEndpoint):
                 )
 
             if len(emails_recipients_list) >= 1:
+                email_body = reportGenerator.create_kpi_email_body(
+                    store=store, file_name=file_name, report_date=yesterday_date_str
+                )
+
+                email_subject = reportGenerator.create_kpi_email_subject(
+                    store=store, report_date_string=yesterday_date_str
+                )
+
                 email_properties = IEmailProperties(
-                    subject=reportGenerator.create_kpi_email_subject(
-                        store=store, report_date_string=yesterday_date_str
-                    ),
+                    subject=email_subject,
                     recipient=emails_recipients_list,
                     file_name=file_name,
-                    body=reportGenerator.create_kpi_email_body(store.email_regional),
+                    body=email_body,
                 )
 
                 messenger.send_message(
@@ -123,13 +132,12 @@ class DailyReportEndpoint(IEndpoint):
         }
 
     def send_kpi_daily_mail_all(self, body: DebugBody):
-        self.kpi_data_manager.fetch_and_build_datasets(source="local", file_path="./notebooks/kpi_data_manager2.pkl")
-        # self.kpi_data_manager.fetch_and_build_datasets()
+        self.kpi_data_manager.fetch_and_build_datasets(source="bigquery")
 
         mask_ativa = self.kpi_data_manager.df_lojas["ativa"]
 
         id_lojas: List[str] = list(self.kpi_data_manager.df_lojas[mask_ativa]["loja_group_code"].unique())
 
-        body = DailyReportBody(ids_loja=id_lojas, debug_mode=body.debug_mode)
+        daily_report_body = DailyReportBody(ids_loja=id_lojas, debug_mode=body.debug_mode)
 
-        self.send_kpi_daily_mail(body=body)
+        self.send_kpi_daily_mail(body=daily_report_body)

@@ -45,7 +45,6 @@ class StoreInfo:
         if regional_name.lower() in emails_regionais:
             return emails_regionais[regional_name.lower()]
         else:
-            print(regional_name)
             return ""
 
     def emails_regionais(self) -> Dict[str, str]:

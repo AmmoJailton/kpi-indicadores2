@@ -50,7 +50,7 @@ class ReportGenerator(BaseGenerator):
         store: StoreInfo,
         yesterday_date: str,
         **kwargs,
-    ) -> IReportContent:
+    ) -> Optional[IReportContent]:
 
         df_store_formated, df_vendedor_formated_month, df_vendedor_formated_day = KpiDataFormater.format_all_tables(
             id_loja=store.loja_id,
@@ -93,14 +93,14 @@ class ReportGenerator(BaseGenerator):
             )
         else:
             return IReportContent(
-                document_file_name=f"{filename}.pdf",
+                document_file_name="",
                 document_content=[
                     IReportContentPage(
                         page="1",
                         content=[
                             IPageContent(
-                                title=f"KPIs Loja {store.marca_loja} - {store.nome_loja} - {yesterday_date}",
-                                content="Nenhum dado encontrado",
+                                title="",
+                                content="",
                             )
                         ],
                     ),
@@ -113,16 +113,26 @@ class ReportGenerator(BaseGenerator):
             return []
         if store.regional.lower() not in store.emails_regionais():
             return []
-        # email_vinicius = 'vinicius.voltolini@ammovarejo.com.br'
+
+        # email_vinicius = "vinicius.voltolini@ammovarejo.com.br"
         # return [store.email, store.email_regional, email_vinicius]
         return ["joao.garcia@ammovarejo.com.br"]
 
     @staticmethod
-    def create_kpi_email_body(email_reg: str) -> str:
+    def create_kpi_email_body(store: StoreInfo, file_name: str, report_date: str) -> str:
+        if file_name == "":
+            return f"""
+
+            Nenhuma venda encontrada para o dia {report_date}.
+
+            Em caso de dúvidas ou feedback enviar para: {store.email_regional}
+
+        """
+
         return f"""
         Relatório em anexo. Versão em teste de validação.
 
-        Favor conferir os valores e dar feedback para: {email_reg}
+        Favor conferir os valores e dar feedback para: {store.email_regional}
 
         Observações:
 
