@@ -65,7 +65,7 @@ class DailyReportEndpoint(IEndpoint):
     def send_kpi_daily_mail(self, body: DailyReportBody):
         if body.debug_mode:
             self.kpi_data_manager = self.kpi_data_manager.fetch_and_build_datasets(
-                source="local", file_path="./notebooks/kpi_data_manager2.pkl"
+                source="local", file_path="./notebooks/kpi_data_manager.pkl"
             )
         elif self.kpi_data_manager.should_fetch_datasets:
             self.kpi_data_manager.fetch_and_build_datasets(source="bigquery")
@@ -113,6 +113,8 @@ class DailyReportEndpoint(IEndpoint):
                     channel="email",
                     email_properties=email_properties,
                 )
+
+            reportGenerator.delete_report_file(file_name=file_name)
 
         return {
             "statusCode": 201,

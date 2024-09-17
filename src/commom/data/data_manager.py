@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict, Literal, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -10,6 +10,8 @@ from commom.database.queries.query_metas import QUERY_METAS
 from commom.database.queries.query_parcelas import QUERY_PARCELAS
 from commom.database.queries.query_vendas import QUERY_VENDAS
 from commom.database.queries.query_vendedores import QUERY_VENDEDORES
+
+DatasetsSources = Literal["bigquery", "local"]
 
 
 class KpiDataManager:
@@ -51,8 +53,8 @@ class KpiDataManager:
 
         return date_diff.days > 1
 
-    def fetch_and_build_datasets(self, source: str, **kwargs) -> Any:
-        sources: Dict[str, Callable] = {
+    def fetch_and_build_datasets(self, source: DatasetsSources, **kwargs) -> Any:
+        sources: Dict[DatasetsSources, Callable] = {
             "bigquery": self.fetch_and_build_datasets_form_big_query,
             "local": self.fetch_local_datasets,
         }

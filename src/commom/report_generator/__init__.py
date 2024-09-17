@@ -1,3 +1,4 @@
+import os
 from typing import Callable, Dict, List, Optional
 
 import pandas as pd
@@ -135,3 +136,8 @@ class ReportGenerator(BaseGenerator):
     @staticmethod
     def create_kpi_email_subject(store: StoreInfo, report_date_string: str) -> str:
         return f"[TESTE] Report Diário Loja: {store.marca_loja} {store.nome_loja} - {report_date_string}"
+
+    @staticmethod
+    def delete_report_file(file_name: str) -> None:
+        if os.path.exists(file_name):
+            os.remove(file_name)
