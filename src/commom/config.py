@@ -1,18 +1,10 @@
 import inspect
-import logging
 import os
 import sys
 
 from google.oauth2 import service_account
 
-LOG_LEVELS = {
-    "notset": logging.NOTSET,
-    "debug": logging.DEBUG,
-    "info": logging.INFO,
-    "warning": logging.WARNING,
-    "error": logging.ERROR,
-    "critical": logging.CRITICAL,
-}
+from commom.logger import get_log_level
 
 
 def factory(env):
@@ -25,9 +17,8 @@ def factory(env):
 
 
 class BaseConfig(object):
-    LOG_LEVEL = LOG_LEVELS.get(str.lower(os.environ.get("LOG_LEVEL", "info")))
+    LOG_LEVEL = get_log_level()
     GOOGLE_CREDENTIALS_FILEPATH = "/tmp/gcloud-api.json"
-    # os.environ["GCP_CREDENTIALS_SECRET"] = GOOGLE_CREDENTIALS_FILEPATH
     credentials = service_account.Credentials.from_service_account_file(GOOGLE_CREDENTIALS_FILEPATH)
     scope_credentials = credentials.with_scopes(["https://www.googleapis.com/auth/cloud-platform"])
 

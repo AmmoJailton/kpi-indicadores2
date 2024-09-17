@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from commom import logger
 from commom.base_classes.base_sender import BaseMessenger
 from innovation_messenger.config import config
 
@@ -67,7 +68,8 @@ class Messenger(BaseMessenger):
                 server.login(user=self.sender_email, password=self.sender_password)
                 server.sendmail(self.sender_email, email_properties.recipient, message.as_string())
                 return True
-            except Exception:
+            except Exception as e:
+                logger.error(e)
                 return False
 
     def get_sender_password(self) -> None:

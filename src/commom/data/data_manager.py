@@ -8,8 +8,9 @@ from commom.database.data_read import DataRead
 from commom.database.queries.query_lojas import QUERY_LOJAS
 from commom.database.queries.query_metas import QUERY_METAS
 from commom.database.queries.query_parcelas import QUERY_PARCELAS
-from commom.database.queries.query_vendas import QUERY_VENDAS
+from commom.database.queries.query_vendas_nf import QUERY_VENDAS_NF
 from commom.database.queries.query_vendedores import QUERY_VENDEDORES
+from commom.logger import logger
 
 DatasetsSources = Literal["bigquery", "local"]
 
@@ -58,20 +59,16 @@ class KpiDataManager:
             "bigquery": self.fetch_and_build_datasets_form_big_query,
             "local": self.fetch_local_datasets,
         }
-
+        logger.info(f"Fetching datasets from {source}")
         return sources[source](**kwargs)
 
     def fetch_and_build_datasets_form_big_query(self) -> bool:
         self._fetch_data_from_bigquery()
-        self._build_df_vendas_pdv()
+        self._build_df_vendas_nf_pdv()
         self._build_df_parcelas_with_displaycode()
 
-        self.df_nome_vendedor = (
-            self.df_vendas_pdv.groupby(["vendedor", "cpf_vendedor_inteiro"])["is_frete"]
-            .max()
-            .reset_index()
-            .drop(columns="is_frete")
-        )
+        self.df_nome_vendedor = self.df_vendedores[["name", "cpf"]]
+        self.df_nome_vendedor.columns = ["vendedor", "cpf_vendedor_inteiro"]
 
         kpis_loja_dict = {}
 
@@ -98,7 +95,7 @@ class KpiDataManager:
     def _fetch_data_from_bigquery(self) -> None:
         self.df_lojas = DataRead.from_bigquery(QUERY_LOJAS)
         self.df_vendedores = DataRead.from_bigquery(QUERY_VENDEDORES)
-        self.df_vendas = DataRead.from_bigquery(QUERY_VENDAS)
+        self.df_vendas = DataRead.from_bigquery(QUERY_VENDAS_NF)
         self.df_parcelas = DataRead.from_bigquery(QUERY_PARCELAS)
         self.df_metas = DataRead.from_bigquery(QUERY_METAS).rename(
             columns={"cpf_vendedor": "cpf_vendedor_inteiro", "loja": "distributorId"}
@@ -115,6 +112,22 @@ class KpiDataManager:
             df_vendas_temp["tipo_transacao"].shift(1)
         )
         df_vendas_temp["venda_cupom"] = ~df_vendas_temp["cupom_vendedor"].isnull()
+
+        mask_pdv = df_vendas_temp["tipo_transacao"].isin(PDV_TYPE_LIST)
+
+        df_vendas_pdv = df_vendas_temp[mask_pdv]
+        df_vendas_pdv.loc[:, "tipo_transacao"] = df_vendas_pdv["tipo_transacao"].replace("PI - 360", "STORE")
+        df_vendas_pdv.loc[:, "tipo_transacao"] = df_vendas_pdv["tipo_transacao"].replace("PI", "STORE")
+        df_vendas_pdv.loc[:, "tipo_transacao"] = df_vendas_pdv["tipo_transacao"].replace("EP", "STORE")
+
+        self.df_vendas_pdv = df_vendas_pdv.reset_index(drop=True)
+
+        return None
+
+    def _build_df_vendas_nf_pdv(self) -> None:
+        df_vendas_temp = self.df_vendas.copy()
+
+        PDV_TYPE_LIST = ["STORE", "PI - 360", "PI", "EP", "REFUND"]
 
         mask_pdv = df_vendas_temp["tipo_transacao"].isin(PDV_TYPE_LIST)
 
@@ -185,7 +198,8 @@ class KpiDataManager:
         kpi_type: str,
     ) -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
 
-        mask_tickets = ~(self.df_vendas_pdv["tipo_transacao"].isin(["STORE", "CUPOM"]) & self.df_vendas_pdv["is_frete"])
+        mask_tickets = pd.Series(np.ones(self.df_vendas_pdv.shape[0]).astype(bool))
+        # ~(self.df_vendas_pdv["tipo_transacao"].isin(["STORE", "CUPOM"]) & (self.df_vendas_pdv["tipo_transacao"] == isfrete) == false)
 
         mask_vendas = pd.Series(np.ones(self.df_vendas_pdv.shape[0]).astype(bool))
 

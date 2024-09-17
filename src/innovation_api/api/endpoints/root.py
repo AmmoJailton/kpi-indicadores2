@@ -63,6 +63,7 @@ class DailyReportEndpoint(IEndpoint):
         pass
 
     def send_kpi_daily_mail(self, body: DailyReportBody):
+        # init
         reportGenerator = ReportGenerator()
         messenger = Messenger()
         ids_loja = body.ids_loja
