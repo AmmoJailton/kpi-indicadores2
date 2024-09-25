@@ -1,3 +1,4 @@
+import os
 import smtplib
 from dataclasses import dataclass
 from email import encoders
@@ -6,7 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from commom import logger
+from commom.logger import logger
 from commom.base_classes.base_sender import BaseMessenger
 from innovation_messenger.config import config
 

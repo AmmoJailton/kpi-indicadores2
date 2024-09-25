@@ -23,6 +23,9 @@ class WhatsappController(IEndpoint):
         pass
 
     def send_message(self, body: IWhatsappBody):
+        return {
+            'status': 'em fase de testes'
+        }
         if body.phone == '':
             raise HTTPException(status_code=400, detail='Invalid phone number')
         elif len(body.phone) < 13:
