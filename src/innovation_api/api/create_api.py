@@ -2,11 +2,9 @@ from fastapi import FastAPI
 
 import innovation_api
 from innovation_api.api import Router
-from innovation_api.api.endpoints.root import (
-    DailyReportEndpoint,
-    RootEndpoint,
-    TestEndpoint,
-)
+from innovation_api.api.controllers.daily_report_controller import DailyReportController
+from innovation_api.api.controllers.root_controller import RootController
+from innovation_api.api.controllers.whatsapp_messenger_controller import WhatsappController
 from innovation_api.api.metadata.description import description, summary, title
 from innovation_api.api.metadata.tags_metadata import tags_metadata
 
@@ -22,11 +20,11 @@ def create_api():
         openapi_tags=tags_metadata,
     )
 
-    info_endpoint = RootEndpoint()
-    outro_info = TestEndpoint()
-    daily_report_endpoint = DailyReportEndpoint()
-
-    endpoints = [info_endpoint, outro_info, daily_report_endpoint]
+    info_endpoint = RootController()
+    daily_report_endpoint = DailyReportController()
+    whatsapp_messenger_endpoint = WhatsappController()
+    
+    endpoints = [info_endpoint, daily_report_endpoint, whatsapp_messenger_endpoint]
 
     for endpoint in endpoints:
         router.add_endpoint(endpoint)
