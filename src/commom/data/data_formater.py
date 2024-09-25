@@ -16,11 +16,11 @@ class KpiDataFormater:
             return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
         df_vendedor_formated_month = self._format_vendedor_kpis_mes(
-            df_kpis_vendedor=df_kpis_vendedor, df_nome_vendedor=df_nome_vendedor, id_loja=id_loja
+            df_kpis_vendedor=df_kpis_vendedor.dropna(), df_nome_vendedor=df_nome_vendedor, id_loja=id_loja
         )
 
         df_vendedor_formated_day = self._format_vendedor_kpis_dia(
-            df_kpis_vendedor=df_kpis_vendedor, df_nome_vendedor=df_nome_vendedor, id_loja=id_loja
+            df_kpis_vendedor=df_kpis_vendedor.dropna(), df_nome_vendedor=df_nome_vendedor, id_loja=id_loja
         )
 
         return df_store_formated, df_vendedor_formated_month, df_vendedor_formated_day

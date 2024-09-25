@@ -20,7 +20,7 @@ SELECT
   SUM(cost) AS store_cost,
   SUM(netValue) AS net_value
 FROM
-  `ammo_dw.fat_vendas_nf` fat_vendas_nf
+  `projetoomni.innovation_dataset.vendas_lojas_temp` fat_vendas_nf
 LEFT JOIN
   `ammo_dw.dim_display_code` dim_display_code
 ON
