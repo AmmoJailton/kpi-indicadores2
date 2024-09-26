@@ -16,11 +16,11 @@ class KpiDataFormater:
             return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
         df_vendedor_formated_month = self._format_vendedor_kpis_mes(
-            df_kpis_vendedor=df_kpis_vendedor.dropna(), df_nome_vendedor=df_nome_vendedor, id_loja=id_loja
+            df_kpis_vendedor=df_kpis_vendedor, df_nome_vendedor=df_nome_vendedor, id_loja=id_loja
         )
 
         df_vendedor_formated_day = self._format_vendedor_kpis_dia(
-            df_kpis_vendedor=df_kpis_vendedor.dropna(), df_nome_vendedor=df_nome_vendedor, id_loja=id_loja
+            df_kpis_vendedor=df_kpis_vendedor, df_nome_vendedor=df_nome_vendedor, id_loja=id_loja
         )
 
         return df_store_formated, df_vendedor_formated_month, df_vendedor_formated_day
@@ -89,10 +89,10 @@ class KpiDataFormater:
         mask = mask_ano_dia & mask_mes
         df_vendedor_mes: pd.DataFrame = df_vendedor[mask].reset_index(drop=True)
         df_vendedor_mes["normalized_net_value"] = (
-            df_vendedor_mes["net_value"] * 100 / df_vendedor_mes["net_value"].max().round(2)
+            df_vendedor_mes["net_value"] * 100 / round(df_vendedor_mes["net_value"].max(), 2)
         )
         df_vendedor_mes["net_value_share"] = (
-            df_vendedor_mes["net_value"] * 100 / df_vendedor_mes["net_value"].max().round(2)
+            df_vendedor_mes["net_value"] * 100 / round(df_vendedor_mes["net_value"].max(), 2)
         )
         df_vendedor_mes = df_nome_vendedor.merge(df_vendedor_mes, on="cpf_vendedor_inteiro").drop(
             columns="cpf_vendedor_inteiro"
@@ -140,7 +140,7 @@ class KpiDataFormater:
         for key, format in format_dict.items():
             df_vendedor_mes_formatado[key] = df_vendedor_mes_formatado[key].map(format.format)
             if format == format_money:
-                df_vendedor_mes_formatado[key] = df_vendedor_mes_formatado[key].str.replace(",", ".")
+                df_vendedor_mes_formatado[key] = df_vendedor_mes_formatado[key].astype(str).str.replace(",", ".")
 
         df_vendedor_mes_formatado = df_vendedor_mes_formatado.reset_index(drop=True).T.reset_index().T
 

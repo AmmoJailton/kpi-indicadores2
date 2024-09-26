@@ -36,6 +36,8 @@ class PDFGenerator:
         if cell_width == "even":
             if len(data) > 0:
                 col_width = pdf.epw / len(data[0]) - 1
+            else:
+                col_width = pdf.epw / len(table_data[0]) - 1
         elif cell_width == "uneven":
             col_widths = []
 

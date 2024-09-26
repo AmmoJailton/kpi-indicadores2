@@ -6,7 +6,6 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any, Callable, Dict, List, Optional, Union
-
 from commom.logger import logger
 from commom.base_classes.base_sender import BaseMessenger
 from innovation_messenger.config import config
@@ -79,7 +78,9 @@ class Messenger(BaseMessenger):
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             for password in password_list:
                 try:
-                    server.login(user=config.EMAIL_ACCOUNT, password=password)
-                    self.sender_password = password
+                    response: tuple = server.login(user=config.EMAIL_ACCOUNT, password=password)
+                    if response[0] <= 235:
+                        self.sender_password = password
+                        break
                 except smtplib.SMTPAuthenticationError:
                     print("Usuário ou senha incorretos.")
