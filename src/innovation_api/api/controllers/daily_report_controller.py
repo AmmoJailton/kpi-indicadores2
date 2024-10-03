@@ -1,7 +1,6 @@
 from typing import Any, Dict, List
 
 from fastapi import HTTPException
-from commom.data.data_manager import KpiDataManager
 from commom.data_classes.report_content_data_class import DailyReportBody, DebugBody
 from innovation_api.api.services.daily_report_service import DailyReportService
 from innovation_api.typing import IEndpoint, IEndpointConfig

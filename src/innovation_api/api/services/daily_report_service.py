@@ -1,6 +1,6 @@
 import datetime
 from typing import Any, Dict, List
-from commom.data.data_manager import KpiDataManager
+from commom.kpi_data.kpi_data_manager import KpiDataManager
 from commom.data_classes.report_content_data_class import DailyReportBody, DebugBody
 from commom.data_classes.store_info_data_class import StoreInfo
 from commom.report_generator import ReportGenerator
