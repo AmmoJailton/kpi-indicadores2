@@ -1,6 +1,9 @@
 from dataclasses import dataclass
+import dataclasses
 from typing import List, Literal, Optional, Union
 import datetime
+import pandas as pd
+from pydantic import BaseModel
 
 @dataclass
 class InstagramCaptionInfo:
@@ -31,7 +34,16 @@ class InstagramAccountInfo:
     last_update: Union[datetime.date, str, None]
     biography: Optional[str] = None
     profile_pic: Optional[str] = None # api -> profile_pic_url_hd | profile_pic_url
+    
+    def asdict(self):
+        return dataclasses.asdict(self)
+    
+    @property
+    def keys(self):
+        return self.asdict().keys
 
+    def to_dataframe(self) -> pd.DataFrame:
+        return pd.DataFrame(self.asdict())
 
 @dataclass
 class IRequestInstagramParams:
@@ -45,45 +57,12 @@ class IRequestInstagramParams:
     media_querystring: str
     pagination_token: Optional[str] = None
 
+class UpdateInstagramAccountsInfoBody(BaseModel):
+    usernames: List[str]
 
-# Isso está aqui por falta de um lugar melhor e para evitar dependências circulares
-# Não sei se isso será necessário
-# Parece redundante
-TrackedAccounts = Literal[
-    "altenburg.oficial",
-    "altenburghaus",
-    "artelasse",
-    "artex",
-    "buddemeyeroficial",
-    "casaalmeidaoficial",
-    "casariachuelo",
-    "casa.sonno",
-    "hoomybr",
-    "karstenoficial",
-    "mmartanoficial",
-    "santistadecora",
-    "trussardioficial",
-    "trousseauoficial",
-    "zeloloja"
-]
-
-TRACKED_ACCOUNT_LIST = [
-    "altenburg.oficial",
-    "altenburghaus",
-    "artelasse",
-    "artex",
-    "buddemeyeroficial",
-    "casaalmeidaoficial",
-    "casariachuelo",
-    "casa.sonno",
-    "hoomybr",
-    "karstenoficial",
-    "mmartanoficial",
-    "santistadecora",
-    "trussardioficial",
-    "trousseauoficial",
-    "zeloloja"
-]
+class SendInstagramAccountsInfoBody(BaseModel):
+    recipients: List[str]
+    debug_mode: Optional[bool] = True
 
 ServiceNames = Literal[
     "instagram_scrapper_api"
