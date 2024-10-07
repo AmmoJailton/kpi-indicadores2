@@ -38,12 +38,11 @@ class InstagramAccountInfo:
     def asdict(self):
         return dataclasses.asdict(self)
     
-    @property
-    def keys(self):
-        return self.asdict().keys
-
     def to_dataframe(self) -> pd.DataFrame:
-        return pd.DataFrame(self.asdict())
+        return pd.DataFrame(self.asdict(), index=[0])
+
+    def keys():
+        return InstagramAccountInfo.__dataclass_fields__.keys()
 
 @dataclass
 class IRequestInstagramParams:
@@ -59,7 +58,8 @@ class IRequestInstagramParams:
 
 class UpdateInstagramAccountsInfoBody(BaseModel):
     usernames: List[str]
-
+    debug_mode: Optional[bool] = True
+    
 class SendInstagramAccountsInfoBody(BaseModel):
     recipients: List[str]
     debug_mode: Optional[bool] = True

@@ -12,13 +12,13 @@ class InstagramMonitorController(IEndpoint):
     def endpoints(self) -> List[IEndpointConfig]:
         return [
             IEndpointConfig(
-                route="/update-accounts-info",
+                route="/instagram-monitor/update-accounts-info",
                 rest_method="POST",
                 class_method=self.update_accounts_info,
                 tags=self.TAGS
             ),
             IEndpointConfig(
-                route="/send-report-xlsx",
+                route="/instagram-monitor/send-report-xlsx",
                 rest_method="POST",
                 class_method=self.send_report_xlsx,
                 tags=self.TAGS
@@ -33,7 +33,7 @@ class InstagramMonitorController(IEndpoint):
         if len(usernames) < 1:
             return False
 
-        result = self.instagram_service.update_accounts_info(usernames)
+        result = self.instagram_service.update_accounts_info(usernames, body.debug_mode)
         return result
     
     def send_report_xlsx(self, body: SendInstagramAccountsInfoBody) -> bool:
@@ -43,5 +43,5 @@ class InstagramMonitorController(IEndpoint):
         if len(recipients) < 1:
             return False
         
-        result = self.instagram_service.send_report_xlsx(recipients)
+        result = self.instagram_service.send_report_xlsx(recipients, body.debug_mode)
         return result

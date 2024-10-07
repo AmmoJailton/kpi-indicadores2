@@ -1,5 +1,6 @@
-from typing import Any, List
-
+from typing import List
+import pandas as pd
+from commom.database.queries.query_instagram_monitor import QUERY_INSTAGRAM_MONITOR
 from commom.instagram_data.instagram_data_manager import InstagramDataManager
 from commom.report_generator import ReportGenerator
 from innovation_messenger import IEmailProperties, Messenger
@@ -13,21 +14,31 @@ class InstagramMonitorService:
         self.data_manager = InstagramDataManager()
         self.messenger = Messenger()
     
-    def update_accounts_info(self, usernames: List[str]) -> bool:
-        users_info = self.data_manager.fetch_user_info(list_of_users=usernames)
-        current_dataset = self.data_manager.load_current_user_info_dataset()
-        current_dataset = self.data_manager.update_user_info_dataset(dataset=current_dataset, account_info_list=users_info)
-        result = self.data_manager.save_current_user_info_dataset(dataset=current_dataset)
+    def update_accounts_info(self, usernames: List[str], debug_mode: bool) -> bool:
+        users_info = self.data_manager.fetch_accounts_infos(instagram_account_list=usernames)
+        
+        if debug_mode:
+            current_dataset = self.data_manager.load_current_account_history_dataset('local', 'accounts_info.pkl')
+            current_dataset = self.data_manager.update_accounts_history_dataset(dataset=current_dataset, account_info_list=users_info)
+            result = self.data_manager.save_current_account_history_dataset(source='local', data=current_dataset, path='accounts_info.pkl')
+        else:
+            current_dataset = self.data_manager.load_current_account_history_dataset('bigquery', QUERY_INSTAGRAM_MONITOR)
+            current_dataset = self.data_manager.update_accounts_history_dataset(dataset=current_dataset, account_info_list=users_info)
+            result = self.data_manager.save_current_account_history_dataset(source='bigquery', dataset_id='innovation_dataset', table_id='instagram_accounts_history', dataframe=current_dataset)
         
         return result
     
-    def send_report_xlsx(self, recipients: List[str]):
-        file_name = 'Seguidores_e_postagens.xlsx'
+    def send_report_xlsx(self, recipients: List[str], debug_mode: bool):
 
-        current_dataset = self.data_manager.load_current_user_info_dataset()
+        if debug_mode:
+            current_dataset: pd.DataFrame = self.data_manager.load_current_account_history_dataset(source='local', file_path='accounts_info.pkl')
+        else:
+            current_dataset: pd.DataFrame = self.data_manager.load_current_account_history_dataset(source='bigquery', query=QUERY_INSTAGRAM_MONITOR)
         
         last_update = self.data_manager.get_last_update(current_dataset)
         usernames = self.data_manager.get_usernames(current_dataset)
+        
+        file_name = f'Seguidores_e_postagens_atualizado_{last_update}.xlsx'
         
         current_dataset.to_excel(file_name, sheet_name='Seguidores e postagens', index=False)
 

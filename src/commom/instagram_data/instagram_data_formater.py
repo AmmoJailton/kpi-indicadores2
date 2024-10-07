@@ -1,15 +1,16 @@
 import datetime
 import os
 from typing import Any, Callable, Dict, List, Literal, Union
-from commom.data_classes.instagram_data_class import IRequestInstagramParams, InstagramAccountInfo, ServiceNames, TrackedAccounts
+from commom.data_classes.instagram_data_class import IRequestInstagramParams, InstagramAccountInfo, ServiceNames
 
 class InstagramScrapperAPIDataFormater:
     def __init__(self) -> None:
         pass
     
     @classmethod
-    def get_service_params(cls, username: TrackedAccounts) -> IRequestInstagramParams:
-        host = os.getenv("INSTAGRAM_SCRAPPER_API_HOST")
+    def get_service_params(cls, username: str) -> IRequestInstagramParams:
+        host = 'instagram-scraper-api2.p.rapidapi.com'
+        # host = os.getenv("INSTAGRAM_SCRAPPER_API_HOST")
         url = "https://" + host + "/"
 
         return IRequestInstagramParams(
@@ -18,7 +19,8 @@ class InstagramScrapperAPIDataFormater:
             users_url="v1/info",
             posts_url="v1.2/posts",
             x_rapidapi_host=host,
-            x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN"),
+            x_rapidapi_key="6f36805577msh5e42867c3bd4692p12525ajsn80e3751c2d32",
+            # x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN"),
             user_querystring="username_or_id_or_url",
             media_querystring="pagination_token",
             pagination_token=None
@@ -74,7 +76,7 @@ class InstagramDataFormater:
         self.scrapper_api = InstagramScrapperAPIDataFormater()
     
     @classmethod
-    def get_service_params(cls, service_name: Union[str, ServiceNames], username: Union[str, TrackedAccounts]) -> IRequestInstagramParams:
+    def get_service_params(cls, service_name: Union[str, ServiceNames], username: Union[str, Any]) -> IRequestInstagramParams:
         services_availables: Dict[str, Callable] = {
             "instagram_scrapper_api": InstagramScrapperAPIDataFormater().get_service_params
         }
