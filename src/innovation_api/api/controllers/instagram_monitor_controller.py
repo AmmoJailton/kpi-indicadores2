@@ -2,6 +2,7 @@ from typing import Any, List
 from commom.data_classes.instagram_data_class import UpdateInstagramAccountsInfoBody, SendInstagramAccountsInfoBody
 from innovation_api.api.services.instagram_monitor_service import InstagramMonitorService
 from innovation_api.typing import IEndpoint, IEndpointConfig
+from innovation_messenger import Messenger
 
 
 class InstagramMonitorController(IEndpoint):
@@ -25,23 +26,44 @@ class InstagramMonitorController(IEndpoint):
             )
         ]
 
-    def __init__(self) -> None:
-        self.instagram_service = InstagramMonitorService()
+    def __init__(self, messenger: Messenger) -> None:
+        self.instagram_service = InstagramMonitorService(messenger=messenger)
 
     def update_accounts_info(self, body: UpdateInstagramAccountsInfoBody) -> Any:
         usernames = body.usernames
         if len(usernames) < 1:
-            return False
-
-        result = self.instagram_service.update_accounts_info(usernames, body.debug_mode)
+            return {
+                'result': 'Error',
+                'message': 'Invalid usernames'
+            }
+        
+        try:
+            result = self.instagram_service.update_accounts_info(usernames, body.debug_mode)
+        except Exception as e:
+            result = {
+                'result': 'Error',
+                'message': 'Error while updating accounts info',
+                'exception': str(e)
+            }
+        
         return result
     
-    def send_report_xlsx(self, body: SendInstagramAccountsInfoBody) -> bool:
+    def send_report_xlsx(self, body: SendInstagramAccountsInfoBody) -> Any:
         recipients = body.recipients
-        debug_mode = body.debug_mode
         
         if len(recipients) < 1:
-            return False
+            return {
+                'result': 'Error',
+                'message': 'Invalid recipients'
+            }
         
-        result = self.instagram_service.send_report_xlsx(recipients, body.debug_mode)
+        try:
+            result = self.instagram_service.send_report_xlsx(recipients, body.debug_mode)
+        except Exception as e:
+            result = {
+                'result': 'Error',
+                'message': 'Error while sending report',
+                'exception': str(e)
+            }
+            
         return result

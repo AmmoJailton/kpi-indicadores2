@@ -11,10 +11,10 @@ class DailyReportService():
     reportGenerator: ReportGenerator
     messenger: Messenger
     
-    def __init__(self) -> None:
+    def __init__(self, messenger: Messenger) -> None:
         self.kpi_data_manager = KpiDataManager()
         self.reportGenerator = ReportGenerator()
-        self.messenger = Messenger()
+        self.messenger = messenger
         pass
 
     def send_kpi_daily_mail(self, body: DailyReportBody) -> Dict[str, Any]:
@@ -47,14 +47,14 @@ class DailyReportService():
             if formated_content.document_file_name != "":
                 file_name = self.reportGenerator.generate_report(report_type="kpi", obj_report_content=formated_content)
 
-            if len(body.custom_recipients) > 0:
-                emails_recipients_list = body.custom_recipients
-            else:
-                emails_recipients_list = self.reportGenerator.get_recipients_for_report(
-                    report_type="kpi",
-                    store=store,
-                )
-
+            # if len(body.custom_recipients) > 0:
+            #     emails_recipients_list = body.custom_recipients
+            # else:
+            #     emails_recipients_list = self.reportGenerator.get_recipients_for_report(
+            #         report_type="kpi",
+            #         store=store,
+            #     )
+            emails_recipients_list = ['joao.garcia@ammovarejo.com.br']
             if len(emails_recipients_list) >= 1:
                 email_body = self.reportGenerator.create_kpi_email_body(
                     store=store, file_name=file_name, report_date=yesterday_date_str

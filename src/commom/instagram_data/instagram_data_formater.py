@@ -63,7 +63,7 @@ class InstagramScrapperAPIDataFormater:
             username=data['username'],
             follower_count=data['follower_count'],
             total_media=data['media_count'],
-            last_update=datetime.datetime.now().date(),
+            last_update=datetime.date.today(),
             biography=data['biography'],
             profile_pic=data['profile_pic_url_hd']
         )

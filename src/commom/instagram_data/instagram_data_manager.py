@@ -49,9 +49,14 @@ class InstagramDataManager:
         return pd.DataFrame(data)
     
     def update_accounts_history_dataset(self, dataset: pd.DataFrame, account_info_list: List[InstagramAccountInfo]) -> pd.DataFrame:
-        df_info_list = [account_info.to_dataframe() for account_info in account_info_list]
-        updated_df = pd.concat(df_info_list+[dataset]).sort_values(by=['last_update', 'username'], ascending=False).reset_index(drop=True)
-        return updated_df
+        dataset['last_update'] = pd.to_datetime(dataset['last_update'])
+        df_empty = self._create_empty_accounts_history_dataset()
+        for account_info in account_info_list:
+            df_account_info = account_info.to_dataframe()
+            df_account_info['last_update'] = pd.to_datetime(df_account_info['last_update'])
+            df_empty = pd.concat([df_empty, df_account_info]).reset_index(drop=True)
+        df_updated = pd.concat([dataset, df_empty]).sort_values(by=['last_update', 'username'], ascending=False)
+        return df_updated.reset_index(drop=True)
     
     def fetch_user_media_info(self, **kwargs) -> Any:
         return """
