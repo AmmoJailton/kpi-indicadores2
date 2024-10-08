@@ -58,7 +58,7 @@ class InstagramMonitorController(IEndpoint):
             }
         
         try:
-            result = self.instagram_service.send_report_xlsx(recipients, body.debug_mode)
+            result = self.instagram_service.send_report_xlsx(recipients, body.debug_mode, body.columns)
         except Exception as e:
             result = {
                 'result': 'Error',

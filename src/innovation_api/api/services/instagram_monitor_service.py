@@ -1,5 +1,4 @@
-import datetime
-from typing import List
+from typing import List, Optional
 import pandas as pd
 from commom.logger import logger
 from commom.data_classes.instagram_data_class import InstagramAccountInfo
@@ -22,7 +21,6 @@ class InstagramMonitorService:
         
         logger.info(f"Fetch accounts info from instagram via API ")
         users_info = self.data_manager.fetch_accounts_infos(instagram_account_list=usernames)
-        
         
         if debug_mode:
             logger.info("Loading accounts info from Pickle")
@@ -52,12 +50,20 @@ class InstagramMonitorService:
             }
         }
     
-    def send_report_xlsx(self, recipients: List[str], debug_mode: bool):
+    def send_report_xlsx(self, recipients: List[str], debug_mode: bool, columns: Optional[List[str]] = None):
         logger.info("Send report - init")
+        
+        if columns is None:
+            columns = ['last_update', 'username','name', 'follower_count', 'delta_bruto', 'delta_porcentagem']
+        
+        logger.info("Requested resources: " + str(columns))
+        
         logger.info("Loading accounts info")
         if debug_mode:
+            logger.info("Loading LOCAL FILE")
             current_dataset: pd.DataFrame = self.data_manager.load_current_account_history_dataset(source='local', file_path='accounts_info.pkl')
         else:
+            logger.info("Loading BIGQUERY")
             current_dataset: pd.DataFrame = self.data_manager.load_current_account_history_dataset(source='bigquery', query=QUERY_INSTAGRAM_MONITOR)
         
         logger.info("Get last update  and usernames")
@@ -66,13 +72,15 @@ class InstagramMonitorService:
         
         logger.info("Generate report file and email properties")
         file_name = f'Seguidores_e_postagens_atualizado_{last_update}.xlsx'
-        current_dataset.to_excel(file_name, sheet_name='Seguidores e postagens', index=False)
+        current_dataset['last_update'] = current_dataset['last_update'].dt.strftime("%Y-%m-%d")
+        filtered_dataset = current_dataset[columns].sort_values(by=['username','last_update'], ascending=True)
+        filtered_dataset.to_excel(file_name, sheet_name='Seguidores e postagens', index=False)
 
         email_body = f"""
             Report sobre número de seguidres e número total de postagens.
             
             Ultima atualização: {last_update}
-            
+
             Contas observadas: 
             {sorted(usernames).__str__().replace('[', '').replace(']', '').replace("'", "")}
         """
