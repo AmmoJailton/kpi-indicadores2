@@ -62,6 +62,7 @@ class UpdateInstagramAccountsInfoBody(BaseModel):
     
 class SendInstagramAccountsInfoBody(BaseModel):
     recipients: List[str]
+    columns: Optional[List[str]] = None
     debug_mode: Optional[bool] = True
 
 ServiceNames = Literal[

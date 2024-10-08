@@ -49,13 +49,25 @@ class InstagramDataManager:
         return pd.DataFrame(data)
     
     def update_accounts_history_dataset(self, dataset: pd.DataFrame, account_info_list: List[InstagramAccountInfo]) -> pd.DataFrame:
-        dataset['last_update'] = pd.to_datetime(dataset['last_update'])
+        dataset['last_update'] = pd.to_datetime(dataset['last_update'], format="%Y-%m-%d", utc=True)
         df_empty = self._create_empty_accounts_history_dataset()
+        today = pd.to_datetime('today', format="%Y-%m-%d", utc=True)
+        month_init = pd.to_datetime(f'{today.year}-{today.month}-01', format="%Y-%m-%d", utc=True)
+        init_month_mask = dataset['last_update'] > month_init
+        
         for account_info in account_info_list:
             df_account_info = account_info.to_dataframe()
-            df_account_info['last_update'] = pd.to_datetime(df_account_info['last_update'])
-            df_empty = pd.concat([df_empty, df_account_info]).reset_index(drop=True)
-        df_updated = pd.concat([dataset, df_empty]).sort_values(by=['last_update', 'username'], ascending=False)
+            df_account_info['last_update'] = pd.to_datetime(df_account_info['last_update'], format="%Y-%m-%d", utc=True)
+            username_mask = dataset['username'] == account_info.username
+            df_current_month: pd.DataFrame = dataset[username_mask & init_month_mask].reset_index(drop=True)
+            initial_count_mask = df_current_month['last_update'] == df_current_month['last_update'].min()
+            initial_followers = df_current_month[initial_count_mask]['follower_count'].values[0]
+            df_account_info['delta_bruto'] = account_info.follower_count - initial_followers
+            df_account_info['delta_porcentagem'] = (account_info.follower_count - initial_followers) * 100. / initial_followers
+            df_empty = pd.concat([df_empty, df_account_info])
+
+        dataset = dataset.reset_index(drop=True)
+        df_updated = pd.concat([dataset, df_empty])
         return df_updated.reset_index(drop=True)
     
     def fetch_user_media_info(self, **kwargs) -> Any:

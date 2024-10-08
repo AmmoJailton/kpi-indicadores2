@@ -2,6 +2,7 @@ import datetime
 import os
 from typing import Any, Callable, Dict, List, Literal, Union
 from commom.data_classes.instagram_data_class import IRequestInstagramParams, InstagramAccountInfo, ServiceNames
+import pandas as pd
 
 class InstagramScrapperAPIDataFormater:
     def __init__(self) -> None:
@@ -63,7 +64,7 @@ class InstagramScrapperAPIDataFormater:
             username=data['username'],
             follower_count=data['follower_count'],
             total_media=data['media_count'],
-            last_update=datetime.date.today(),
+            last_update=pd.to_datetime('today', format="%Y-%m-%d", utc=True),
             biography=data['biography'],
             profile_pic=data['profile_pic_url_hd']
         )
