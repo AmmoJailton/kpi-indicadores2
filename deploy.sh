@@ -4,7 +4,8 @@ echo "clar docker cache"
 docker buildx prune --all
 
 echo "Get version"
-export VERSION="v"`grep "__version__" src/innovation_api/__init__.py | sed 's/[ "]//g'| sed 's/\./-/g'|cut -d"="  -f2`
+# export VERSION="v"`grep "__version__" src/innovation_api/__init__.py | sed 's/[ "]//g'| sed 's/\./-/g'|cut -d"="  -f2`
+export VERSION=$(date +"%Y%m%d.%H.%M")
 echo $VERSION
 
 echo "export image name"
