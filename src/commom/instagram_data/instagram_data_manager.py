@@ -63,7 +63,7 @@ class InstagramDataManager:
             initial_count_mask = df_current_month['last_update'] == df_current_month['last_update'].min()
             initial_followers = df_current_month[initial_count_mask]['follower_count'].values[0]
             df_account_info['delta_bruto'] = account_info.follower_count - initial_followers
-            df_account_info['delta_porcentagem'] = (account_info.follower_count - initial_followers) * 100. / initial_followers
+            df_account_info['delta_porcentagem'] = (account_info.follower_count - initial_followers) / initial_followers
             df_empty = pd.concat([df_empty, df_account_info])
 
         dataset = dataset.reset_index(drop=True)
