@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, Literal, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-from commom.database.data_read import DataRead
+from commom.database.data_handler import DataHandler
 from commom.database.queries.query_lojas import QUERY_LOJAS
 from commom.database.queries.query_metas import QUERY_METAS
 from commom.database.queries.query_parcelas import QUERY_PARCELAS
@@ -20,7 +20,7 @@ class KpiDataManager:
     df_nome_vendedor: pd.DataFrame
 
     def __init__(self, delta_days: int = 1) -> None:
-        self._sources: Dict[str, Callable] = {"local": DataRead.from_local_pickle, "bigquery": DataRead.from_bigquery}
+        self._sources: Dict[str, Callable] = {"local": DataHandler.read_from_local_pickle, "bigquery": DataHandler.read_from_bigquery}
         self.delta_days = delta_days
         self.yesterday_date = datetime.datetime.today() - datetime.timedelta(days=self.delta_days)
         self.yesterday_date_str = self.yesterday_date.strftime("%Y-%m-%d")
@@ -94,11 +94,11 @@ class KpiDataManager:
         return True
 
     def _fetch_data_from_bigquery(self) -> None:
-        self.df_lojas = DataRead.from_bigquery(QUERY_LOJAS)
-        self.df_vendedores = DataRead.from_bigquery(QUERY_VENDEDORES)
-        self.df_vendas = DataRead.from_bigquery(QUERY_VENDAS_NF)
-        self.df_parcelas = DataRead.from_bigquery(QUERY_PARCELAS)
-        self.df_metas = DataRead.from_bigquery(QUERY_METAS).rename(
+        self.df_lojas = DataHandler.read_from_bigquery(QUERY_LOJAS)
+        self.df_vendedores = DataHandler.read_from_bigquery(QUERY_VENDEDORES)
+        self.df_vendas = DataHandler.read_from_bigquery(QUERY_VENDAS_NF)
+        self.df_parcelas = DataHandler.read_from_bigquery(QUERY_PARCELAS)
+        self.df_metas = DataHandler.read_from_bigquery(QUERY_METAS).rename(
             columns={"cpf_vendedor": "cpf_vendedor_inteiro", "loja": "distributorId"}
         )
 
@@ -288,7 +288,7 @@ class KpiDataManager:
         return df_kpis
 
     def fetch_local_datasets(self, file_path: str) -> pd.DataFrame:
-        return DataRead.from_local_pickle(file_path)
+        return DataHandler.read_from_local_pickle(file_path)
 
     def _abreviate_vendedor_name(self, full_name: str) -> str:
         full_name = full_name.replace("   ", " ")

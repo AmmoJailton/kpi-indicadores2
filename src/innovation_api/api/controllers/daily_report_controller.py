@@ -1,10 +1,10 @@
 from typing import Any, Dict, List
 
 from fastapi import HTTPException
-from commom.data.data_manager import KpiDataManager
 from commom.data_classes.report_content_data_class import DailyReportBody, DebugBody
 from innovation_api.api.services.daily_report_service import DailyReportService
 from innovation_api.typing import IEndpoint, IEndpointConfig
+from innovation_messenger import Messenger
 
 class DailyReportController(IEndpoint):
     TAGS = ["KPI report"]
@@ -24,8 +24,8 @@ class DailyReportController(IEndpoint):
             ),
         ]
 
-    def __init__(self) -> None:
-        self.daily_report_service = DailyReportService()
+    def __init__(self, messenger: Messenger) -> None:
+        self.daily_report_service = DailyReportService(messenger=messenger)
         pass
 
     def send_kpi_daily_mail(self, body: DailyReportBody) -> Dict[str, Any]:
