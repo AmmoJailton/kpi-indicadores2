@@ -24,7 +24,8 @@ class Messenger(BaseMessenger):
     sender_password = ""
 
     def __init__(self) -> None:
-        self.get_sender_password()
+        if self.sender_password == "":
+            self.get_sender_password()
         pass
 
     def send_message(

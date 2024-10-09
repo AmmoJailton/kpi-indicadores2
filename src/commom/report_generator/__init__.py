@@ -5,7 +5,7 @@ import pandas as pd
 import unidecode
 
 from commom.base_classes.base_generator import BaseGenerator
-from commom.data.data_formater import KpiDataFormater
+from commom.kpi_data.kpi_data_formater import KpiDataFormater
 from commom.data_classes.report_content_data_class import (
     IPageContent,
     IReportContent,
