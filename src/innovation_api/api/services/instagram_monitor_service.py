@@ -87,7 +87,6 @@ class InstagramMonitorService:
         Contas observadas:
             {sorted(usernames).__str__().replace('[', '').replace(']', '').replace("'", "")}
         """
-            
         
         email_subject = "[TESTE] - Seguidores e postagens - V0.0.1.alpha"
         email_properties = IEmailProperties(
