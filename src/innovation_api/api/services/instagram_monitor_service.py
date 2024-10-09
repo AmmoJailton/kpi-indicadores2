@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 import pandas as pd
 from commom.logger import logger
 from commom.data_classes.instagram_data_class import InstagramAccountInfo
@@ -16,6 +16,21 @@ class InstagramMonitorService:
         self.data_manager = InstagramDataManager()
         self.messenger = messenger
     
+    def get_monitor_infos(self)-> Any:
+        current_dataset = self.data_manager.load_current_account_history_dataset(source='bigquery', query=QUERY_INSTAGRAM_MONITOR)
+        last_update = self.data_manager.get_last_update(current_dataset)
+        usernames = self.data_manager.get_usernames(current_dataset)
+        columns = current_dataset.columns.to_list()
+        
+        return {
+            'result': 'Success',
+            'data': {
+                'last_update': last_update,
+                'usernames': usernames,
+                'columns': columns
+            }
+        }
+        
     def update_accounts_info(self, usernames: List[str], debug_mode: bool) -> bool:
         logger.info(f"Update accounts - init")
         

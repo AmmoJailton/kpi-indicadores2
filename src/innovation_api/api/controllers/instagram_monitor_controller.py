@@ -23,12 +23,21 @@ class InstagramMonitorController(IEndpoint):
                 rest_method="POST",
                 class_method=self.send_report_xlsx,
                 tags=self.TAGS
+            ),
+            IEndpointConfig(
+                route="/instagram-monitor/",
+                rest_method="GET",
+                class_method=self.get_monitor_infos,
+                tags=self.TAGS
             )
         ]
 
     def __init__(self, messenger: Messenger) -> None:
         self.instagram_service = InstagramMonitorService(messenger=messenger)
 
+    def get_monitor_infos(self) -> Any:
+        return self.instagram_service.get_monitor_infos()
+    
     def update_accounts_info(self, body: UpdateInstagramAccountsInfoBody) -> Any:
         usernames = body.usernames
         if len(usernames) < 1:
