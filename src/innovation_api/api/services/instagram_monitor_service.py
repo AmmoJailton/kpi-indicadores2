@@ -70,18 +70,21 @@ class InstagramMonitorService:
         last_update = self.data_manager.get_last_update(current_dataset)
         usernames = self.data_manager.get_usernames(current_dataset)
         
+        logger.info("Format some data")
+        current_dataset['delta_porcentagem'] = round(current_dataset['delta_porcentagem'], 4)
+        current_dataset['last_update'] = current_dataset['last_update'].dt.strftime("%d-%m-%Y")
+        filtered_dataset = current_dataset[columns].sort_values(by=['username','last_update'], ascending=True)
+        
         logger.info("Generate report file and email properties")
         file_name = f'Seguidores_e_postagens_atualizado_{last_update}.xlsx'
-        current_dataset['last_update'] = current_dataset['last_update'].dt.strftime("%Y-%m-%d")
-        filtered_dataset = current_dataset[columns].sort_values(by=['username','last_update'], ascending=True)
         filtered_dataset.to_excel(file_name, sheet_name='Seguidores e postagens', index=False)
 
         email_body = f"""
-            Report sobre número de seguidres e número total de postagens.
+        Report sobre número de seguidres e número total de postagens.
             
-            Ultima atualização: {last_update}
+        Ultima atualização: {last_update}
 
-            Contas observadas: 
+        Contas observadas:
             {sorted(usernames).__str__().replace('[', '').replace(']', '').replace("'", "")}
         """
             
