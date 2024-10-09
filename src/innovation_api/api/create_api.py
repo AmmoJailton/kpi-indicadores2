@@ -13,6 +13,7 @@ from innovation_messenger import Messenger
 def create_api():
     messenger = Messenger()
     router = Router()
+    
     fast_api = FastAPI(
         title=title,
         summary=summary,
