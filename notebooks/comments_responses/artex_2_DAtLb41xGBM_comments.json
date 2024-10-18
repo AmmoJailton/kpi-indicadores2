@@ -1,0 +1,204 @@
+{
+    "data": {
+        "additional_data": {
+            "caption": {
+                "content_type": "comment",
+                "created_at": 1728052911,
+                "created_at_for_fb_app": 1728052911,
+                "created_at_utc": 1728052911,
+                "did_report_as_spam": false,
+                "has_translation": true,
+                "hashtags": [],
+                "id": "18165673285312600",
+                "is_covered": false,
+                "is_created_by_media_owner": true,
+                "is_ranked_comment": false,
+                "mentions": [],
+                "private_reply_status": 0,
+                "share_enabled": false,
+                "text": "Alerta de novidade! A estampa Corcel chegou para levar a tendência cottagecore ao quarto, transformando o ambiente com elementos que vão do country ao floral! Perfeito para as crianças de todas as idades, já que vamos garantir a nossa também 😅✨",
+                "type": 1,
+                "user": {
+                    "fbid_v2": 17841402009269734,
+                    "full_name": "ARTEX",
+                    "id": "2077874975",
+                    "is_private": false,
+                    "is_unpublished": false,
+                    "is_verified": true,
+                    "profile_pic_id": "3433939922678293728",
+                    "profile_pic_url": "https://scontent-sjc3-1.cdninstagram.com/v/t51.2885-19/455108042_860014102275169_1657998699154895928_n.jpg?stp=dst-jpg_e0_s150x150&_nc_ht=scontent-sjc3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=HThMo_OY9e0Q7kNvgEvWZQI&_nc_gid=631d04ce2af14c63990e22f880c48b03&edm=AD93TDoBAAAA&ccb=7-5&oh=00_AYDOCRiojzrhZt-sKIn7u3rDKFCwChwApUtiPosbUInP2w&oe=6718A3C1&_nc_sid=87e5dd",
+                    "username": "artex"
+                },
+                "user_id": "2077874975"
+            },
+            "caption_is_edited": false,
+            "comment_cover_pos": "bottom",
+            "comment_filter_param": "no_filter",
+            "comment_likes_enabled": true,
+            "media_header_display": "none",
+            "quick_response_emojis": [
+                {
+                    "unicode": "❤️"
+                },
+                {
+                    "unicode": "🙌"
+                },
+                {
+                    "unicode": "🔥"
+                },
+                {
+                    "unicode": "👏"
+                },
+                {
+                    "unicode": "😢"
+                },
+                {
+                    "unicode": "😍"
+                },
+                {
+                    "unicode": "😮"
+                },
+                {
+                    "unicode": "😂"
+                }
+            ]
+        },
+        "count": 3,
+        "items": [
+            {
+                "comment_like_count": 0,
+                "content_type": "comment",
+                "created_at": 1728053303,
+                "created_at_for_fb_app": 1728053303,
+                "created_at_utc": 1728053303,
+                "did_report_as_spam": false,
+                "has_liked": false,
+                "has_liked_comment": false,
+                "has_translation": true,
+                "hashtags": [],
+                "id": "18034863917004614",
+                "inline_composer_display_condition": "never",
+                "is_covered": false,
+                "is_created_by_media_owner": true,
+                "is_pinned": false,
+                "is_ranked_comment": false,
+                "like_count": 0,
+                "mentions": [
+                    "@camilantes"
+                ],
+                "other_preview_users": [],
+                "preview_child_comments": [],
+                "private_reply_status": 0,
+                "replied_to_comment_id": "18463824685034141",
+                "share_enabled": false,
+                "text": "@camilantes Queremos ver na sua cama, Cami! 🥹",
+                "type": 2,
+                "user": {
+                    "fbid_v2": 17841402009269734,
+                    "full_name": "ARTEX",
+                    "id": "2077874975",
+                    "is_mentionable": true,
+                    "is_private": false,
+                    "is_verified": true,
+                    "latest_reel_media": 1729207674,
+                    "profile_pic_id": "3433939922678293728",
+                    "profile_pic_url": "https://scontent-sjc3-1.cdninstagram.com/v/t51.2885-19/455108042_860014102275169_1657998699154895928_n.jpg?stp=dst-jpg_e0_s150x150&_nc_ht=scontent-sjc3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=HThMo_OY9e0Q7kNvgEvWZQI&_nc_gid=631d04ce2af14c63990e22f880c48b03&edm=AD93TDoBAAAA&ccb=7-5&oh=00_AYDOCRiojzrhZt-sKIn7u3rDKFCwChwApUtiPosbUInP2w&oe=6718A3C1&_nc_sid=87e5dd",
+                    "username": "artex"
+                },
+                "user_id": "2077874975"
+            },
+            {
+                "comment_like_count": 2,
+                "content_type": "comment",
+                "created_at": 1728053089,
+                "created_at_for_fb_app": 1728053089,
+                "created_at_utc": 1728053089,
+                "did_report_as_spam": false,
+                "has_liked": false,
+                "has_liked_comment": false,
+                "has_translation": true,
+                "hashtags": [],
+                "id": "18463824685034141",
+                "inline_composer_display_condition": "never",
+                "is_covered": false,
+                "is_liked_by_media_owner": true,
+                "is_pinned": false,
+                "is_ranked_comment": false,
+                "like_count": 2,
+                "mentions": [],
+                "other_preview_users": [],
+                "preview_child_comments": [],
+                "private_reply_status": 0,
+                "share_enabled": false,
+                "text": "Linda demais",
+                "type": 0,
+                "user": {
+                    "fbid_v2": 17841401681774063,
+                    "full_name": "Camila Pauli Antes",
+                    "id": "260088059",
+                    "is_mentionable": true,
+                    "is_private": false,
+                    "is_verified": false,
+                    "latest_reel_media": 1729263762,
+                    "profile_pic_id": "3006354278504712299",
+                    "profile_pic_url": "https://scontent-sjc3-1.cdninstagram.com/v/t51.2885-19/323113204_841670833761372_2130573998638920719_n.jpg?stp=dst-jpg_e0_s150x150&_nc_ht=scontent-sjc3-1.cdninstagram.com&_nc_cat=100&_nc_ohc=pZUHC11R9M0Q7kNvgEl01tJ&_nc_gid=631d04ce2af14c63990e22f880c48b03&edm=AD93TDoBAAAA&ccb=7-5&oh=00_AYCNdqqgV6OUVjK6zybp4DoyvacOp8-mzWw1bBODICD7rg&oe=67188CEE&_nc_sid=87e5dd",
+                    "username": "camilantes"
+                },
+                "user_id": "260088059"
+            },
+            {
+                "comment_like_count": 0,
+                "content_type": "comment",
+                "created_at": 1728053004,
+                "created_at_for_fb_app": 1728053004,
+                "created_at_utc": 1728053004,
+                "did_report_as_spam": false,
+                "has_liked": false,
+                "has_liked_comment": false,
+                "has_translation": true,
+                "hashtags": [
+                    "#jogodecama",
+                    "#roupadecama",
+                    "#quartosdecorados",
+                    "#quartosinspiradores",
+                    "#cama",
+                    "#camaarrumada",
+                    "#camaposta",
+                    "#inspiraçãodecor",
+                    "#decoração",
+                    "#diadascrianças",
+                    "#country"
+                ],
+                "id": "18285591880233175",
+                "inline_composer_display_condition": "never",
+                "is_covered": false,
+                "is_created_by_media_owner": true,
+                "is_pinned": false,
+                "is_ranked_comment": false,
+                "like_count": 0,
+                "mentions": [],
+                "other_preview_users": [],
+                "preview_child_comments": [],
+                "private_reply_status": 0,
+                "share_enabled": false,
+                "text": "#jogodecama #roupadecama #quartosdecorados #quartosinspiradores #cama #camaarrumada #camaposta #inspiraçãodecor #decoração #diadascrianças #country",
+                "type": 0,
+                "user": {
+                    "fbid_v2": 17841402009269734,
+                    "full_name": "ARTEX",
+                    "id": "2077874975",
+                    "is_mentionable": true,
+                    "is_private": false,
+                    "is_verified": true,
+                    "latest_reel_media": 1729207674,
+                    "profile_pic_id": "3433939922678293728",
+                    "profile_pic_url": "https://scontent-sjc3-1.cdninstagram.com/v/t51.2885-19/455108042_860014102275169_1657998699154895928_n.jpg?stp=dst-jpg_e0_s150x150&_nc_ht=scontent-sjc3-1.cdninstagram.com&_nc_cat=101&_nc_ohc=HThMo_OY9e0Q7kNvgEvWZQI&_nc_gid=631d04ce2af14c63990e22f880c48b03&edm=AD93TDoBAAAA&ccb=7-5&oh=00_AYDOCRiojzrhZt-sKIn7u3rDKFCwChwApUtiPosbUInP2w&oe=6718A3C1&_nc_sid=87e5dd",
+                    "username": "artex"
+                },
+                "user_id": "2077874975"
+            }
+        ],
+        "total": 18
+    },
+    "pagination_token": null
+}
