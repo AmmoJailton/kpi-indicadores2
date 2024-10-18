@@ -10,8 +10,7 @@ class InstagramScrapperAPIDataFormater:
     
     @classmethod
     def get_service_params(cls, username: str) -> IRequestInstagramParams:
-        host = 'instagram-scraper-api2.p.rapidapi.com'
-        # host = os.getenv("INSTAGRAM_SCRAPPER_API_HOST")
+        host = os.getenv("INSTAGRAM_SCRAPPER_API_HOST", 'instagram-scraper-api2.p.rapidapi.com')
         url = "https://" + host + "/"
 
         return IRequestInstagramParams(
@@ -20,13 +19,32 @@ class InstagramScrapperAPIDataFormater:
             users_url="v1/info",
             posts_url="v1.2/posts",
             x_rapidapi_host=host,
-            x_rapidapi_key="6f36805577msh5e42867c3bd4692p12525ajsn80e3751c2d32",
-            # x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN"),
+            x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN"),
             user_querystring="username_or_id_or_url",
-            media_querystring="pagination_token",
+            pagination_querystring="pagination_token",
             pagination_token=None
         )
     
+    @classmethod
+    def get_service_params_comments(cls, username: str, code_or_id_or_url: str) -> IRequestInstagramParams:
+        host = os.getenv("INSTAGRAM_SCRAPPER_API_HOST", 'instagram-scraper-api2.p.rapidapi.com')
+        url = "https://" + host + "/"
+
+        return IRequestInstagramParams(
+            username=username,
+            base_url=url,
+            users_url="v1/info",
+            posts_url="v1.2/posts",
+            comments_url="v1/comments",
+            x_rapidapi_host=host,
+            x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN"),
+            user_querystring="username_or_id_or_url",
+            pagination_querystring="pagination_token",
+            comments_querystring="code_or_id_or_url",
+            post_code_id=code_or_id_or_url,
+            pagination_token=None,  
+        )
+        
     @classmethod
     def format_params_to_headers(cls, params: IRequestInstagramParams) -> Dict[str, str]:
         return {
@@ -41,10 +59,17 @@ class InstagramScrapperAPIDataFormater:
         }
 
     @classmethod
-    def format_media_querystring(cls, params: IRequestInstagramParams) -> Dict[str, str]:
+    def format_posts_pagination_querystring(cls, params: IRequestInstagramParams) -> Dict[str, str]:
         return {
             params.user_querystring: params.username,
-            params.media_querystring: params.pagination_token
+            params.pagination_querystring: params.pagination_token
+        }
+  
+    @classmethod
+    def format_comments_querystring(cls, params: IRequestInstagramParams) -> Dict[str, str]:
+        return {
+            params.comments_querystring: params.post_code_id,
+            params.pagination_querystring: params.pagination_token
         }
 
     @classmethod
@@ -52,8 +77,12 @@ class InstagramScrapperAPIDataFormater:
         return params.base_url + params.users_url
 
     @classmethod
-    def format_media_url(cls, params: IRequestInstagramParams) -> str:
+    def format_posts_url(cls, params: IRequestInstagramParams) -> str:
         return params.base_url + params.posts_url
+    
+    @classmethod
+    def format_comments_url(cls, params: IRequestInstagramParams) -> str:
+        return params.base_url + params.comments_url
     
     @classmethod
     def parse_account_info(cls, response) -> InstagramAccountInfo:
@@ -101,9 +130,9 @@ class InstagramDataFormater:
         return services_availables[service_name](params)
 
     @classmethod
-    def format_media_querystring(cls, service_name: Union[str, ServiceNames], params: IRequestInstagramParams) -> Dict[str, str]:
+    def format_posts_pagination_querystring(cls, service_name: Union[str, ServiceNames], params: IRequestInstagramParams) -> Dict[str, str]:
         services_availables: Dict[str, Callable] = {
-            "instagram_scrapper_api": InstagramScrapperAPIDataFormater().format_media_querystring
+            "instagram_scrapper_api": InstagramScrapperAPIDataFormater().format_posts_pagination_querystring
         }
         
         return services_availables[service_name](params)
@@ -117,9 +146,9 @@ class InstagramDataFormater:
         return services_availables[service_name](params)
 
     @classmethod
-    def format_media_url(cls, service_name: Union[str, ServiceNames], params: IRequestInstagramParams) -> str:
+    def format_posts_url(cls, service_name: Union[str, ServiceNames], params: IRequestInstagramParams) -> str:
         services_availables: Dict[str, Callable] = {
-            "instagram_scrapper_api": InstagramScrapperAPIDataFormater().format_media_url
+            "instagram_scrapper_api": InstagramScrapperAPIDataFormater().format_posts_url
         }
         
         return services_availables[service_name](params)

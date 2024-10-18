@@ -53,8 +53,11 @@ class IRequestInstagramParams:
     x_rapidapi_key: str
     x_rapidapi_host: str
     user_querystring: str
-    media_querystring: str
+    pagination_querystring: str
     pagination_token: Optional[str] = None
+    comments_url: Optional[str] = None
+    comments_querystring: Optional[str] = None
+    post_code_id: Optional[str] = None
 
 class UpdateInstagramAccountsInfoBody(BaseModel):
     usernames: List[str]
