@@ -59,22 +59,6 @@ class IRequestInstagramParams:
     comments_querystring: Optional[str] = None
     post_code_id: Optional[str] = None
 
-class UpdateInstagramAccountsInfoBody(BaseModel):
-    usernames: List[str]
-    debug_mode: Optional[bool] = True
-    
-class SendInstagramAccountsInfoBody(BaseModel):
-    recipients: List[str]
-    columns: Optional[List[str]] = None
-    debug_mode: Optional[bool] = True
-
-ServiceNames = Literal[
-    "instagram_scrapper_api"
-]
-
-SERVICE_NAME_LIST = [
-    "instagram_scrapper_api"
-]
 
 @dataclass
 class InstagramPostItem:
@@ -96,7 +80,7 @@ class InstagramPostItem:
 
 @dataclass
 class InstagramPostResponseData:
-    count: Union[int, str]
+    count: int
     items: List[InstagramPostItem]
 
 @dataclass
@@ -123,3 +107,21 @@ class InstagramCommentResponseData:
 class InstagramCommentResponse:
     data: InstagramCommentResponseData
     pagination_token: str
+
+
+class UpdateInstagramAccountsInfoBody(BaseModel):
+    usernames: List[str]
+    debug_mode: Optional[bool] = True
+    
+class SendInstagramAccountsInfoBody(BaseModel):
+    recipients: List[str]
+    columns: Optional[List[str]] = None
+    debug_mode: Optional[bool] = True
+
+ServiceNames = Literal[
+    "instagram_scrapper_api"
+]
+
+SERVICE_NAME_LIST = [
+    "instagram_scrapper_api"
+]

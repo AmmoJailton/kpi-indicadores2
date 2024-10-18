@@ -19,7 +19,7 @@ class InstagramScrapperAPIDataFormater:
             users_url="v1/info",
             posts_url="v1.2/posts",
             x_rapidapi_host=host,
-            x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN"),
+            x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN", "6f36805577msh5e42867c3bd4692p12525ajsn80e3751c2d32",),
             user_querystring="username_or_id_or_url",
             pagination_querystring="pagination_token",
             pagination_token=None
@@ -37,7 +37,7 @@ class InstagramScrapperAPIDataFormater:
             posts_url="v1.2/posts",
             comments_url="v1/comments",
             x_rapidapi_host=host,
-            x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN"),
+            x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN", "6f36805577msh5e42867c3bd4692p12525ajsn80e3751c2d32",),
             user_querystring="username_or_id_or_url",
             pagination_querystring="pagination_token",
             comments_querystring="code_or_id_or_url",
