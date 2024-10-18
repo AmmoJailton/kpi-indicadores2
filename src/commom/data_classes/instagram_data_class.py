@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import dataclasses
-from typing import List, Literal, Optional, Union
+from typing import Any, List, Literal, Optional, Union
 import datetime
 import pandas as pd
 from pydantic import BaseModel
@@ -75,3 +75,51 @@ ServiceNames = Literal[
 SERVICE_NAME_LIST = [
     "instagram_scrapper_api"
 ]
+
+@dataclass
+class InstagramPostItem:
+    created_at: Union[int, str, Any]
+    hashtags: List[str]
+    mentions: List[str]
+    text: Union[str, Any]
+    code: Union[Any, str]
+    comment_count: int
+    id: Union[int, str]
+    like_and_view_counts_disabled: bool
+    like_count: int
+    media_name: str
+    media_type: int
+    play_count: int
+    thumbnail_url: Union[str, Any]
+    share_count: int
+    username: str
+
+@dataclass
+class InstagramPostResponseData:
+    count: Union[int, str]
+    items: List[InstagramPostItem]
+
+@dataclass
+class InstagramPostResponse:
+    data: InstagramPostResponseData
+    pagination_token: str
+
+@dataclass
+class InstagramCommentItem:
+    created_at: Union[str, datetime.date, datetime.datetime, Any] 
+    comment_like_count: int
+    spam: bool
+    mentions: List[str]
+    text: str
+    comment_username: str
+
+@dataclass
+class InstagramCommentResponseData:
+    count: int
+    total: int
+    items: List[InstagramCommentItem]
+
+@dataclass
+class InstagramCommentResponse:
+    data: InstagramCommentResponseData
+    pagination_token: str

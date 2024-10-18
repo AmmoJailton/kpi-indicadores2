@@ -1,7 +1,7 @@
 import datetime
 import os
 from typing import Any, Callable, Dict, List, Literal, Union
-from commom.data_classes.instagram_data_class import IRequestInstagramParams, InstagramAccountInfo, ServiceNames
+from commom.data_classes.instagram_data_class import IRequestInstagramParams, InstagramAccountInfo, InstagramCommentItem, InstagramCommentResponse, InstagramCommentResponseData, InstagramPostItem, InstagramPostResponseData, InstagramPostResponse, ServiceNames
 import pandas as pd
 
 class InstagramScrapperAPIDataFormater:
@@ -98,6 +98,85 @@ class InstagramScrapperAPIDataFormater:
             profile_pic=data['profile_pic_url_hd']
         )
 
+    @classmethod
+    def parse_response_to_posts_obj(cls, response: Dict[str, Any]) -> InstagramPostResponse:
+        data = dict(response['data'])
+        pagination_token = response['pagination_token']
+        count = data['count']
+        items = list(data['items'])
+        
+        postItems:List[InstagramPostItem] = []
+        
+        for item in items:
+            item = dict(item)
+            caption = dict(item['caption'])
+            if item.get('play_count', None) is None:
+                item['play_count'] = 0
+                
+            postItems.append(
+                InstagramPostItem(
+                    created_at=datetime.datetime.fromtimestamp(caption['created_at_utc']).strftime("%d/%m/%Y"),
+                    hashtags=caption.get('hashtags', []),
+                    mentions=caption.get('mentions', []),
+                    text=caption.get('text', ''),
+                    code=item['code'],
+                    comment_count=item.get('comment_count', 0),
+                    id=item['id'],
+                    like_and_view_counts_disabled=item['like_and_view_counts_disabled'],
+                    like_count=item.get('like_count', 0),
+                    media_name=item['media_name'],
+                    media_type=item['media_type'],
+                    play_count=item.get('play_count', None),
+                    share_count=item.get('share_count', 0),
+                    thumbnail_url=item['thumbnail_url'],
+                    username=data['user']['username']
+                )
+            )
+        
+        responseData = InstagramPostResponse(
+            data=InstagramPostResponseData(
+                count=count,
+                items=postItems
+            ),
+            pagination_token=pagination_token
+        )
+        
+        return responseData
+
+    @classmethod
+    def parse_response_to_comments_obj(cls, response)->InstagramCommentResponse:
+        data = dict(response['data'])
+        pagination_token = response['pagination_token']
+        count = data['count']
+        total = data['total']
+        items = list(data['items'])
+        
+        commentItems:List[InstagramCommentItem] = []
+        
+        for item in items:
+            item = dict(item)
+            user = dict(item['user'])
+            
+            commentItems.append(
+                InstagramCommentItem(
+                    created_at=datetime.datetime.fromtimestamp(item['created_at_utc']).strftime("%d/%m/%Y"),
+                    comment_like_count=item.get('comment_like_count', 0),
+                    spam=item.get('did_report_as_spam', False),
+                    mentions=item.get('mentions', []),
+                    text=item.get('text', ''),
+                    comment_username=user.get('username', '')
+                )
+            )
+            
+        return InstagramCommentResponse(
+            pagination_token=pagination_token,
+            data=InstagramCommentResponseData(
+                count=count,
+                total=total,
+                items=commentItems
+            ),
+        )
+
 
 class InstagramDataFormater:
     scrapper_api: InstagramScrapperAPIDataFormater
@@ -157,6 +236,22 @@ class InstagramDataFormater:
     def parse_account_info(cls, service_name: str, response: Dict[str, Any]) -> InstagramAccountInfo:
         services_availables: Dict[str, Callable] = {
             "instagram_scrapper_api": InstagramScrapperAPIDataFormater().parse_account_info
+        }
+        
+        return services_availables[service_name](response)
+    
+    @classmethod
+    def parse_response_to_posts_obj(cls, service_name: str, response: Dict[str, Any]) -> InstagramPostResponse:
+        services_availables: Dict[str, Callable] = {
+            "instagram_scrapper_api": InstagramScrapperAPIDataFormater().parse_response_to_posts_obj
+        }
+        
+        return services_availables[service_name](response)
+    
+    @classmethod
+    def parse_response_to_comments_obj(cls, service_name: str, response: Dict[str, Any]) -> InstagramCommentResponse:
+        services_availables: Dict[str, Callable] = {
+            "instagram_scrapper_api": InstagramScrapperAPIDataFormater().parse_response_to_comments_obj
         }
         
         return services_availables[service_name](response)
