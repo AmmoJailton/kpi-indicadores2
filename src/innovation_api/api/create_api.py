@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from fastapi.middleware.cors import CORSMiddleware
 import innovation_api
 from innovation_api.api import Router
 from innovation_api.api.controllers.daily_report_controller import DailyReportController
@@ -22,7 +22,13 @@ def create_api():
         version=innovation_api.__version__,
         openapi_tags=tags_metadata,
     )
-
+    fast_api.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     info_endpoint = RootController()
     daily_report_endpoint = DailyReportController(messenger=messenger)
     instagram_monitor_endpoint = InstagramMonitorController(messenger=messenger)

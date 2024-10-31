@@ -25,14 +25,16 @@ class LoginArtexController(IEndpoint):
         response = self.service.login(code_or_email=body.code_or_email)
         
         if response:
-            return {
+            res = {
                 "result": "Success",
                 "message": response
             }
+            return res
         else:
-            return {
+            res = {
                 "result": "Invalid code_or_email",
                 "message": response
             }
+            return res
             
         
