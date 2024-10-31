@@ -8,4 +8,5 @@ ARTEX_LOGIN_CODES: List[str] = [
     "codigo-123",
     "123-codigo",
     "1234hgjgier",
+    "loko",
 ]
