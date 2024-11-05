@@ -49,21 +49,24 @@ class InstagramDataManager:
         return pd.DataFrame(data)
     
     def update_accounts_history_dataset(self, dataset: pd.DataFrame, account_info_list: List[InstagramAccountInfo]) -> pd.DataFrame:
-        dataset['lastUpdate'] = pd.to_datetime(dataset['lastUpdate'], format="%Y-%m-%d", utc=True)
+        dataset['last_update'] = pd.to_datetime(dataset['last_update'], format="%Y-%m-%d", utc=True)
         df_empty = self._create_empty_accounts_history_dataset()
         today = pd.to_datetime('today', format="%Y-%m-%d", utc=True)
         month_init = pd.to_datetime(f'{today.year}-{today.month}-01', format="%Y-%m-%d", utc=True)
-        init_month_mask = dataset['lastUpdate'] > month_init
+        init_month_mask = dataset['last_update'] > month_init
         
         for account_info in account_info_list:
             df_account_info = account_info.to_dataframe()
-            df_account_info['lastUpdate'] = pd.to_datetime(df_account_info['lastUpdate'], format="%Y-%m-%d", utc=True)
+            df_account_info['last_update'] = pd.to_datetime(df_account_info['last_update'], format="%Y-%m-%d", utc=True)
             username_mask = dataset['username'] == account_info.username
             df_current_month: pd.DataFrame = dataset[username_mask & init_month_mask].reset_index(drop=True)
-            initial_count_mask = df_current_month['lastUpdate'] == df_current_month['lastUpdate'].min()
-            initial_followers = df_current_month[initial_count_mask]['followerCount'].values[0]
-            df_account_info['deltaBruto'] = account_info.followerCount - initial_followers
-            df_account_info['deltaPorcentagem'] = (account_info.followerCount - initial_followers) / initial_followers
+            initial_count_mask = df_current_month['last_update'] == df_current_month['last_update'].min()
+            if len(df_current_month[initial_count_mask]['follower_count']) < 1:
+                initial_followers = account_info.follower_count
+            else:
+                initial_followers = df_current_month[initial_count_mask]['follower_count'].values[0]
+            df_account_info['delta_bruto'] = account_info.follower_count - initial_followers
+            df_account_info['delta_porcentagem'] = (account_info.follower_count - initial_followers) / initial_followers
             df_empty = pd.concat([df_empty, df_account_info])
 
         dataset = dataset.reset_index(drop=True)
@@ -87,8 +90,8 @@ class InstagramDataManager:
         except:
             dataframe = self._create_empty_accounts_history_dataset()
         
-        dataframe['lastUpdate'] = pd.to_datetime(dataframe['lastUpdate'])
-        return dataframe.sort_values(by=['lastUpdate'], ascending=False)
+        dataframe['last_update'] = pd.to_datetime(dataframe['last_update'])
+        return dataframe.sort_values(by=['last_update'], ascending=False)
     
     def save_current_account_history_dataset(self, source:str, **kwargs) -> bool:
         sources : Dict[str, Callable] = {
@@ -107,6 +110,6 @@ class InstagramDataManager:
         return dataset['username'].unique().tolist()
 
     def get_last_update(self, dataset: pd.DataFrame) -> str:
-        max_lastUpdate = dataset['lastUpdate'].max()
-        lastUpdate = datetime.datetime.date(max_lastUpdate)
-        return lastUpdate.strftime("%d-%m-%Y")
+        max_last_update = dataset['last_update'].max()
+        last_update = datetime.datetime.date(max_last_update)
+        return last_update.strftime("%d-%m-%Y")
