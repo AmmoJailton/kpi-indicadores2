@@ -69,7 +69,7 @@ class InstagramMonitorService:
         logger.info("Send report - init")
         
         if columns is None:
-            columns = ['last_update', 'username','name', 'follower_count', 'delta_bruto', 'delta_porcentagem']
+            columns = ['lastUpdate', 'username','name', 'followerCount', 'deltaBruto', 'deltaPorcentagem']
         
         logger.info("Requested resources: " + str(columns))
         
@@ -86,9 +86,9 @@ class InstagramMonitorService:
         usernames = self.data_manager.get_usernames(current_dataset)
         
         logger.info("Format some data")
-        current_dataset['delta_porcentagem'] = round(current_dataset['delta_porcentagem'], 4)
-        current_dataset['last_update'] = current_dataset['last_update'].dt.strftime("%d-%m-%Y")
-        filtered_dataset = current_dataset[columns].sort_values(by=['username','last_update'], ascending=True)
+        current_dataset['deltaPorcentagem'] = round(current_dataset['deltaPorcentagem'], 4)
+        current_dataset['lastUpdate'] = current_dataset['lastUpdate'].dt.strftime("%d-%m-%Y")
+        filtered_dataset = current_dataset[columns].sort_values(by=['username','lastUpdate'], ascending=True)
         
         logger.info("Generate report file and email properties")
         file_name = f'Seguidores_e_postagens_atualizado_{last_update}.xlsx'
@@ -103,7 +103,7 @@ class InstagramMonitorService:
             {sorted(usernames).__str__().replace('[', '').replace(']', '').replace("'", "")}
         """
         
-        email_subject = "[TESTE] - Seguidores e postagens - V0.0.1.alpha"
+        email_subject = "[TESTE] - Seguidores e postagens - V0.0.2"
         email_properties = IEmailProperties(
             subject=email_subject,
             recipient=recipients,

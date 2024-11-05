@@ -29,11 +29,11 @@ class InstagramMediaInfo:
 class InstagramAccountInfo:
     name: str # api -> full_name
     username: str
-    follower_count: Union[int, str]
-    total_media: Union[int, str]
-    last_update: Union[datetime.date, str, None]
+    followerCount: Union[int, str]
+    totalMedia: Union[int, str]
+    lastUpdate: Union[datetime.date, str, None]
     biography: Optional[str] = None
-    profile_pic: Optional[str] = None # api -> profile_pic_url_hd | profile_pic_url
+    profilePic: Optional[str] = None # api -> profile_pic_url_hd | profile_pic_url
     
     def asdict(self):
         return dataclasses.asdict(self)
