@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import dataclasses
-from typing import List, Literal, Optional, Union
+from typing import List, Literal, Optional, Union, Any
 import datetime
 import pandas as pd
 from pydantic import BaseModel
@@ -43,6 +43,41 @@ class InstagramAccountInfo:
 
     def keys():
         return InstagramAccountInfo.__dataclass_fields__.keys()
+
+@dataclass
+class Post:
+    code: str
+    comment_count: int
+    is_pinned: bool
+    is_video: bool
+    like_and_view_counts_disabled: bool
+    like_count: int
+    media_name: str
+    share_count: int
+    user_id: Union[int, str]
+    username: str
+    created_at_utc: Union[int, str, Any]
+    id: Union[int, str]
+    last_update: Union[datetime.datetime,datetime.date, str]
+    text: Optional[str] = ''
+    ig_play_count: Optional[int] = 0
+    is_paid_partnership: Optional[bool] = False
+    play_count: Optional[int] = 0
+    did_report_as_spam: Optional[bool] = False
+    hashtags: Optional[Any] = None
+    mentions: Optional[Any] = None
+    video_duration: Optional[Any] = None
+    carousel_media_count: Optional[int] = None
+    carousel_media_ids: Optional[Any] = None
+    
+    def asdict(self):
+        return dataclasses.asdict(self)
+    
+    def to_dataframe(self) -> pd.DataFrame:
+        return pd.DataFrame(data=self.asdict(), columns=self.asdict().keys(), index=[0])
+    
+    def keys():
+        return Post.__dataclass_fields__.keys()
 
 @dataclass
 class IRequestInstagramParams:

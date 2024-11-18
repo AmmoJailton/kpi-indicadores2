@@ -7,7 +7,6 @@ from commom.database.data_handler import DataHandler
 from commom.logger import logger
 from commom.data_classes.instagram_data_class import SERVICE_NAME_LIST, IRequestInstagramParams, InstagramAccountInfo
 from commom.instagram_data.instagram_data_formater import InstagramDataFormater
-import pickle
 
 class InstagramDataManager:
     services_availables: List[str]
@@ -61,10 +60,12 @@ class InstagramDataManager:
             username_mask = dataset['username'] == account_info.username
             df_current_month: pd.DataFrame = dataset[username_mask & init_month_mask].reset_index(drop=True)
             initial_count_mask = df_current_month['last_update'] == df_current_month['last_update'].min()
+            
             if len(df_current_month[initial_count_mask]['follower_count']) < 1:
                 initial_followers = account_info.follower_count
             else:
                 initial_followers = df_current_month[initial_count_mask]['follower_count'].values[0]
+            
             df_account_info['delta_bruto'] = account_info.follower_count - initial_followers
             df_account_info['delta_porcentagem'] = (account_info.follower_count - initial_followers) / initial_followers
             df_empty = pd.concat([df_empty, df_account_info])
