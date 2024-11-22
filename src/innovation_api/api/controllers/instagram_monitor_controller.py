@@ -29,6 +29,12 @@ class InstagramMonitorController(IEndpoint):
                 rest_method="GET",
                 class_method=self.get_monitor_infos,
                 tags=self.TAGS
+            ),
+            IEndpointConfig(
+                route="/instagram-monitor/update-posts-info",
+                rest_method="POST",
+                class_method=self.update_posts_infos,
+                tags=self.TAGS
             )
         ]
 
@@ -57,7 +63,7 @@ class InstagramMonitorController(IEndpoint):
         
         return result
     
-    def send_report_xlsx(self, body: SendInstagramAccountsInfoBody) -> Any:
+    def send_report_xlsx(self, body: SendInstagramAccountsInfoBody) -> Any:    
         recipients = body.recipients
         
         if len(recipients) < 1:
@@ -76,3 +82,40 @@ class InstagramMonitorController(IEndpoint):
             }
             
         return result
+    
+    def update_posts_infos(self, body: UpdateInstagramAccountsInfoBody) -> Any:
+        usernames = body.usernames
+        if len(usernames) < 1:
+            return {
+                'result': 'Error',
+                'message': 'Invalid usernames'
+            }
+        
+        try:
+            res = self.instagram_service.update_posts(usernames, False)
+
+            if not res.empty:
+                result = {
+                    'result': 'Success',
+                    'message': {
+                        'usernames': usernames,
+                        'updated_posts': True
+                    }
+                }
+                
+            else:
+                result = {
+                    'result': 'Error',
+                    'message': 'Error while updating accounts info',
+                    'exception': str(e)
+                }
+                
+        except Exception as e:
+            result = {
+                'result': 'Error',
+                'message': 'Error while updating accounts info',
+                'exception': str(e)
+            }
+        
+        return result
+    

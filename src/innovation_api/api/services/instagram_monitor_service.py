@@ -1,5 +1,6 @@
 from typing import Any, List, Optional
 import pandas as pd
+from commom.database.queries.query_instagram_posts import QUERY_INSTAGRAM_POSTS
 from commom.logger import logger
 from commom.data_classes.instagram_data_class import InstagramAccountInfo
 from commom.database.queries.query_instagram_monitor import QUERY_INSTAGRAM_MONITOR
@@ -129,4 +130,35 @@ class InstagramMonitorService:
                 'email_subject': email_subject
             }
         }
+    
+    def update_posts(self, listOfUsernames, debugMode: bool = True):
+        logger.info('SERVICE -> Updates posts - START')
+        
+        logger.info('SERVICE -> Get from API - START')
+        postsList = self.data_manager.fetch_user_media_info(listOfUsernames)
+        logger.info('SERVICE -> Get from API - END')
+        
+        if debugMode:
+            logger.info('SERVICE -> DEBUG MODE')
+            df_history : pd.DataFrame = pd.read_pickle('instagram_posts.pkl')
+            
+            datasetNew = self.data_manager.update_posts_dataset(df_history, postsList)
+            
+            self.data_manager.data_handler.write_to_pickle(datasetNew, 'instagram_posts.pkl')
+        
+        else:
+            logger.info('SERVICE -> APPLICATION MODE')
+            
+            logger.info('SERVICE -> Read BQ')
+            df_history = self.data_manager.data_handler.read_from_bigquery(query=QUERY_INSTAGRAM_POSTS)
+            
+            logger.info('SERVICE -> Update dataset with current + new posts')
+            datasetNew = self.data_manager.update_posts_dataset(df_history, postsList)
+            
+            logger.info('SERVICE -> Write BQ')
+            datasetNew = self.data_manager.data_handler.write_to_bigquery(dataset_id='innovation_dataset', table_id='instagram_posts', dataframe=datasetNew)
+        
+        logger.info('Updates posts - END')
+        return datasetNew
+    
     

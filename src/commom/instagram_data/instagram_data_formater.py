@@ -71,24 +71,24 @@ class InstagramScrapperAPIDataFormater:
     
     @classmethod
     def parse_post_response(cls, jsonObj) -> List[Post]:
+        postsList : List[Post] = []
+        
         data = jsonObj['data']
         items = data["items"]
         count = data["count"]
-        
-        postsList : List[Post] = []
         
         if count > 0:
             for item in items:
                 caption = item['caption']
                 user = item["user"]
-                carousel_media_count = 0
                 carousel_media_ids = '[]'
                 is_paid_partnership = False
+                is_pinned = False
+                carousel_media_count = 0
                 ig_play_count = 0
                 play_count = 0
                 share_count = 0
-                video_duration = 0 
-                is_pinned = False           
+                video_duration = 0
                 
                 if 'carousel_media_count' in item.keys():
                     carousel_media_count = item['carousel_media_count']

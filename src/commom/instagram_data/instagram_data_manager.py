@@ -5,7 +5,7 @@ import datetime
 import requests
 from commom.database.data_handler import DataHandler
 from commom.logger import logger
-from commom.data_classes.instagram_data_class import SERVICE_NAME_LIST, IRequestInstagramParams, InstagramAccountInfo
+from commom.data_classes.instagram_data_class import SERVICE_NAME_LIST, IRequestInstagramParams, InstagramAccountInfo, Post
 from commom.instagram_data.instagram_data_formater import InstagramDataFormater
 
 class InstagramDataManager:
@@ -17,10 +17,10 @@ class InstagramDataManager:
         self.data_handler = DataHandler()
     
     def fetch_accounts_infos(self, instagram_account_list: List[str]) -> List[InstagramAccountInfo]:
-        logger.info("Fetching user info - init")
+        logger.info("InstagramDataManager -> Fetching user info - init")
         current_service = self.services_availables[0]
         account_info: List[InstagramAccountInfo] = []
-        logger.info(f"Service: {current_service}")
+        logger.info(f"InstagramDataManager -> Service: {current_service}")
         
         for user in instagram_account_list:
             params: IRequestInstagramParams = InstagramDataFormater().get_service_params(service_name=current_service, username=user)
@@ -34,9 +34,10 @@ class InstagramDataManager:
                 account_info.append(parsed_response)
                 time.sleep(1)
             except Exception as e:
-                logger.info(f"Service not available: {current_service}")
+                logger.info(f"InstagramDataManager -> Service not available: {current_service}")
                 logger.error(e)
-        logger.info("Fetching user info - end")
+                
+        logger.info("InstagramDataManager -> Fetching user info - end")
         return account_info
     
     def _create_empty_accounts_history_dataset(self) -> pd.DataFrame:
@@ -74,11 +75,80 @@ class InstagramDataManager:
         df_updated = pd.concat([dataset, df_empty])
         return df_updated.reset_index(drop=True)
     
-    def fetch_user_media_info(self, **kwargs) -> Any:
-        return """
-            TO BE IMPLEMENTED
-        """
-    
+    def fetch_user_media_info(self, instagram_account_list: List[str]) -> Any:
+        logger.info("InstagramDataManager -> Fetching posts - init")
+        current_service = self.services_availables[0]
+        posts_list: List[Post] = []
+        logger.info(f"InstagramDataManager -> Service: {current_service}")
+        
+        for username in instagram_account_list:
+            service_params = InstagramDataFormater().get_service_params(current_service, username)
+            headers = InstagramDataFormater().format_params_to_headers(current_service, service_params)
+            posts_url = InstagramDataFormater().format_media_url(current_service, service_params)
+            media_querystring = InstagramDataFormater().format_media_querystring(current_service, service_params)
+            
+            logger.info(f"InstagramDataManager -> {username}")
+            
+            try:
+                res = requests.get(url=posts_url, headers=headers, params=media_querystring)
+                response = res.json()
+                time.sleep(1)
+
+            except Exception as e:
+                logger.info(f"InstagramDataManager -> Service not available: {current_service}")
+                logger.error(e)
+            
+            if response:
+                try:
+                    parsedResponse = InstagramDataFormater().parse_post_response(current_service, response)
+                
+                    for post in parsedResponse:
+                        posts_list.append(post)
+                
+                except Exception as error:
+                    logger.info('InstagramDataManager -> Error while parsing response')
+                    logger.info(error)
+            
+        
+        logger.info("InstagramDataManager -> Fetching posts - end")
+        
+        return posts_list
+
+    def _create_empty_posts_dataset(self) -> pd.DataFrame:
+        df = pd.DataFrame(columns=Post.keys())
+        return df
+
+    def update_posts_dataset(self, dataset: pd.DataFrame, posts_list: List[Post]) -> pd.DataFrame:
+        logger.info("InstagramDataManager -> Update dataset - START")
+        dataset['last_update'] = pd.to_datetime(dataset['last_update'], format="%Y-%m-%d", utc=True)
+        df_temp = self._create_empty_posts_dataset()
+        
+        for post in posts_list:
+            df_temp = pd.concat([df_temp, post.to_dataframe()])
+        
+        df_temp = df_temp.reset_index(drop=True)    
+        
+        dataset = pd.concat([dataset, df_temp])
+        
+        dataset = dataset.reset_index(drop=True)
+        
+        fillZeroColumnsDict = {
+            "carousel_media_count":0,
+            "ig_play_count":0,
+            "play_count":0,
+            "share_count":0,
+            "video_duration":0,
+            "is_paid_partnership": False,
+            "is_pinned": False,
+            "did_report_as_spam": False,
+            "carousel_media_ids": '[]'
+        }
+        
+        dataset.fillna(fillZeroColumnsDict, inplace=True)
+        
+        logger.info("InstagramDataManager -> Update dataset - END")
+        return dataset
+
     def load_current_account_history_dataset(self, source: str, **kwargs) -> pd.DataFrame:
         sources : Dict[str, Callable] = {
             "local": self.data_handler.read_from_local_pickle,
