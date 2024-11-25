@@ -90,9 +90,9 @@ class InstagramDataManager:
             logger.info(f"InstagramDataManager -> {username}")
             
             try:
+                time.sleep(3)
                 res = requests.get(url=posts_url, headers=headers, params=media_querystring)
                 response = res.json()
-                time.sleep(1)
 
             except Exception as e:
                 logger.info(f"InstagramDataManager -> Service not available: {current_service}")
@@ -132,19 +132,19 @@ class InstagramDataManager:
         
         dataset = dataset.reset_index(drop=True)
         
-        fillZeroColumnsDict = {
-            "carousel_media_count":0,
-            "ig_play_count":0,
-            "play_count":0,
-            "share_count":0,
-            "video_duration":0,
+        fillNaNColumnsDict = {
+            "carousel_media_count": 0,
+            "ig_play_count": 0,
+            "play_count": 0,
+            "share_count": 0,
+            "video_duration": 0,
             "is_paid_partnership": False,
             "is_pinned": False,
             "did_report_as_spam": False,
             "carousel_media_ids": '[]'
         }
         
-        dataset.fillna(fillZeroColumnsDict, inplace=True)
+        dataset.fillna(fillNaNColumnsDict, inplace=True)
         
         logger.info("InstagramDataManager -> Update dataset - END")
         return dataset
