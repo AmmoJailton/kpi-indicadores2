@@ -95,8 +95,8 @@ class InstagramDataManager:
                 response = res.json()
 
             except Exception as e:
-                logger.info(f"InstagramDataManager -> Service not available: {current_service}")
                 logger.error(e)
+                logger.info(f"InstagramDataManager -> Service not available: {current_service}")
             
             if response:
                 try:

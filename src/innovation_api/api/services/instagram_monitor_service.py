@@ -138,6 +138,7 @@ class InstagramMonitorService:
         postsList = self.data_manager.fetch_user_media_info(listOfUsernames)
         logger.info('SERVICE -> Get from API - END')
         
+        
         if debugMode:
             logger.info('SERVICE -> DEBUG MODE')
             df_history : pd.DataFrame = pd.read_pickle('instagram_posts.pkl')
