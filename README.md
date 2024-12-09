@@ -104,7 +104,18 @@ task start
 OU
 
 ```bash
+poetry run task start
+```
+
+OU
+
+```bash
 uvicorn src.analytics_api.api.main:fast_api --port 8080 --host 0.0.0.0 --reload
+```
+OU
+
+```bash
+poetry run uvicorn src.analytics_api.api.main:fast_api --port 8080 --host 0.0.0.0 --reload
 ```
 
 Project Organization
