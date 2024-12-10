@@ -70,7 +70,7 @@ class InstagramMonitorService:
         logger.info("Send report - init")
         
         if columns is None:
-            columns = ['last_update', 'username','name', 'follower_count', 'delta_bruto', 'delta_porcentagem']
+            columns = ['lastUpdate', 'username','name', 'followerCount', 'deltaBruto', 'deltaPorcentagem']
         
         logger.info("Requested resources: " + str(columns))
         
@@ -83,22 +83,22 @@ class InstagramMonitorService:
             current_dataset: pd.DataFrame = self.data_manager.load_current_account_history_dataset(source='bigquery', query=QUERY_INSTAGRAM_MONITOR)
         
         logger.info("Get last update  and usernames")
-        last_update = self.data_manager.get_last_update(current_dataset)
+        lastUpdate = self.data_manager.get_last_update(current_dataset)
         usernames = self.data_manager.get_usernames(current_dataset)
         
         logger.info("Format some data")
-        current_dataset['delta_porcentagem'] = round(current_dataset['delta_porcentagem'], 4)
-        current_dataset['last_update'] = current_dataset['last_update'].dt.strftime("%d-%m-%Y")
-        filtered_dataset = current_dataset[columns].sort_values(by=['username','last_update'], ascending=True)
+        current_dataset['deltaPorcentagem'] = round(current_dataset['deltaPorcentagem'], 4)
+        current_dataset['lastUpdate'] = current_dataset['lastUpdate'].dt.strftime("%d-%m-%Y")
+        filtered_dataset = current_dataset[columns].sort_values(by=['username','lastUpdate'], ascending=True)
         
         logger.info("Generate report file and email properties")
-        file_name = f'Seguidores_e_postagens_atualizado_{last_update}.xlsx'
+        file_name = f'Seguidores_e_postagens_atualizado_{lastUpdate}.xlsx'
         filtered_dataset.to_excel(file_name, sheet_name='Seguidores e postagens', index=False)
 
         email_body = f"""
         Report sobre número de seguidres e número total de postagens.
             
-        Ultima atualização: {last_update}
+        Ultima atualização: {lastUpdate}
 
         Contas observadas:
             {sorted(usernames).__str__().replace('[', '').replace(']', '').replace("'", "")}
