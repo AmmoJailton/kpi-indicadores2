@@ -13,7 +13,6 @@ class InstagramScrapperAPIDataFormater:
         host = 'instagram-scraper-api2.p.rapidapi.com'
         url = "https://" + host + "/"
         apikey = os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN")
-        print(apikey)
         return IRequestInstagramParams(
             username=username,
             base_url=url,
@@ -110,14 +109,14 @@ class InstagramScrapperAPIDataFormater:
                     is_pinned = item['is_pinned']
                 
                 if caption == None:
-                        created_at = item['taken_at']
+                        created_at = pd.to_datetime(item['taken_at'], unit='s', utc=False)
                         id = item['id']
                         hashtags = '[]'
                         mentions = '[]'
                         report_as_spam = False
                         text = ''
                 else:
-                        created_at = caption['created_at_utc']
+                        created_at = pd.to_datetime(caption['created_at_utc'], unit='s', utc=False)
                         id = caption['id']
                         hashtags = str(caption['hashtags'])
                         mentions = str(caption['mentions'])
