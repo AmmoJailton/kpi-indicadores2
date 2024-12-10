@@ -12,14 +12,15 @@ class InstagramScrapperAPIDataFormater:
     def get_service_params(cls, username: str) -> IRequestInstagramParams:
         host = 'instagram-scraper-api2.p.rapidapi.com'
         url = "https://" + host + "/"
-
+        apikey = os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN", "6f36805577msh5e42867c3bd4692p12525ajsn80e3751c2d32")
+        print(apikey)
         return IRequestInstagramParams(
             username=username,
             base_url=url,
             users_url="v1/info",
             posts_url="v1.2/posts",
             x_rapidapi_host=host,
-            x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN"),
+            x_rapidapi_key=apikey,
             user_querystring="username_or_id_or_url",
             media_querystring="pagination_token",
             pagination_token=None
@@ -107,7 +108,22 @@ class InstagramScrapperAPIDataFormater:
                 
                 if 'is_pinned' in item.keys():
                     is_pinned = item['is_pinned']
-                    
+                
+                if caption == None:
+                        created_at = item['taken_at']
+                        id = item['id']
+                        hashtags = '[]'
+                        mentions = '[]'
+                        report_as_spam = False
+                        text = ''
+                else:
+                        created_at = caption['created_at_utc']
+                        id = caption['id']
+                        hashtags = str(caption['hashtags'])
+                        mentions = str(caption['mentions'])
+                        report_as_spam = caption['did_report_as_spam']
+                        text = caption['text']
+                        
                 post = Post(
                     code= item['code'],
                     comment_count= item['comment_count'],
@@ -122,12 +138,12 @@ class InstagramScrapperAPIDataFormater:
                     share_count= share_count,
                     user_id= user['id'],
                     username= user['username'],
-                    created_at_utc= caption['created_at_utc'],
-                    id= caption['id'],
-                    text= caption['text'],
-                    did_report_as_spam= caption['did_report_as_spam'],
-                    hashtags= str(caption['hashtags']),
-                    mentions= str(caption['mentions']),
+                    created_at_utc= created_at,
+                    id= id,
+                    text= text,
+                    did_report_as_spam= report_as_spam,
+                    hashtags= hashtags,
+                    mentions= mentions,
                     video_duration= video_duration,
                     carousel_media_count= carousel_media_count,
                     carousel_media_ids= carousel_media_ids,
