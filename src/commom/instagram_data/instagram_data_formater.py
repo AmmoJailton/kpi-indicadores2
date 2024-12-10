@@ -12,7 +12,7 @@ class InstagramScrapperAPIDataFormater:
     def get_service_params(cls, username: str) -> IRequestInstagramParams:
         host = 'instagram-scraper-api2.p.rapidapi.com'
         url = "https://" + host + "/"
-        apikey = os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN", "6f36805577msh5e42867c3bd4692p12525ajsn80e3751c2d32")
+        apikey = os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN")
         print(apikey)
         return IRequestInstagramParams(
             username=username,
