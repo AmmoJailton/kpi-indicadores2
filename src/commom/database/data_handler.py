@@ -14,11 +14,11 @@ class DataHandler:
     def read_from_bigquery(cls, query: str, auto_snake_case:bool = True) -> pd.DataFrame:
         client = bigquery.Client(project=config.credentials.project_id, credentials=config.credentials)
         dataframe:pd.DataFrame = client.query(query).to_dataframe()
-        if auto_snake_case:
-            camel_columns = dataframe.columns
-            snake_columns = [cls._from_camel_to_snake(column) for column in camel_columns]
-            rename_dict = dict(zip(camel_columns, snake_columns))
-            dataframe = dataframe.rename(columns=rename_dict)
+        # if auto_snake_case:
+        #     camel_columns = dataframe.columns
+        #     snake_columns = [cls._from_camel_to_snake(column) for column in camel_columns]
+        #     rename_dict = dict(zip(camel_columns, snake_columns))
+        #     dataframe = dataframe.rename(columns=rename_dict)
         return dataframe
 
     @classmethod
@@ -31,11 +31,11 @@ class DataHandler:
     @classmethod
     def write_to_bigquery(cls, dataset_id:str, table_id:str, dataframe:pd.DataFrame, schema: Optional[List[bigquery.SchemaField]] = None, auto_camel_case:bool = True, **kwargs):
         dataframe = dataframe.copy()
-        if auto_camel_case:
-            snake_columns = dataframe.columns
-            camel_columns = [cls._from_snake_to_camel(column) for column in snake_columns]
-            rename_dict = dict(zip(snake_columns, camel_columns))
-            dataframe = dataframe.rename(columns=rename_dict)
+        # if auto_camel_case:
+        #     snake_columns = dataframe.columns
+        #     camel_columns = [cls._from_snake_to_camel(column) for column in snake_columns]
+        #     rename_dict = dict(zip(snake_columns, camel_columns))
+        #     dataframe = dataframe.rename(columns=rename_dict)
 
         client = bigquery.Client(project=config.credentials.project_id, credentials=config.credentials)
         logger.info("Connection to BigQuery successful")
@@ -51,6 +51,7 @@ class DataHandler:
         logger.info('write done')
 
         return dataframe
+    
     @staticmethod
     def _from_snake_to_camel(snake_name: str) -> str:
         str_list = snake_name.split('_')

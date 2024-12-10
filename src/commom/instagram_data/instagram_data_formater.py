@@ -1,7 +1,7 @@
 import datetime
 import os
 from typing import Any, Callable, Dict, List, Literal, Union
-from commom.data_classes.instagram_data_class import IRequestInstagramParams, InstagramAccountInfo, ServiceNames
+from commom.data_classes.instagram_data_class import IRequestInstagramParams, InstagramAccountInfo, Post, ServiceNames
 import pandas as pd
 
 class InstagramScrapperAPIDataFormater:
@@ -11,17 +11,15 @@ class InstagramScrapperAPIDataFormater:
     @classmethod
     def get_service_params(cls, username: str) -> IRequestInstagramParams:
         host = 'instagram-scraper-api2.p.rapidapi.com'
-        # host = os.getenv("INSTAGRAM_SCRAPPER_API_HOST")
         url = "https://" + host + "/"
-
+        apikey = os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN")
         return IRequestInstagramParams(
             username=username,
             base_url=url,
             users_url="v1/info",
             posts_url="v1.2/posts",
             x_rapidapi_host=host,
-            x_rapidapi_key="6f36805577msh5e42867c3bd4692p12525ajsn80e3751c2d32",
-            # x_rapidapi_key=os.getenv("INSTAGRAM_SCRAPPER_API_TOKEN"),
+            x_rapidapi_key=apikey,
             user_querystring="username_or_id_or_url",
             media_querystring="pagination_token",
             pagination_token=None
@@ -68,7 +66,91 @@ class InstagramScrapperAPIDataFormater:
             biography=data['biography'],
             profile_pic=data['profile_pic_url_hd']
         )
-
+    
+    @classmethod
+    def parse_post_response(cls, jsonObj) -> List[Post]:
+        postsList : List[Post] = []
+        
+        data = jsonObj['data']
+        items = data["items"]
+        count = data["count"]
+        
+        if count > 0:
+            for item in items:
+                caption = item['caption']
+                user = item["user"]
+                carousel_media_ids = '[]'
+                is_paid_partnership = False
+                is_pinned = False
+                carousel_media_count = 0
+                ig_play_count = 0
+                play_count = 0
+                share_count = 0
+                video_duration = 0
+                
+                if 'carousel_media_count' in item.keys():
+                    carousel_media_count = item['carousel_media_count']
+                    carousel_media_ids = str(item['carousel_media_ids'])
+                
+                if 'is_paid_partnership' in item.keys():
+                    is_paid_partnership = item['is_paid_partnership']
+                
+                if 'ig_play_count' in item.keys():
+                    ig_play_count = item['ig_play_count']
+                    play_count = item['play_count']
+                
+                if 'share_count' in item.keys():
+                    share_count = item['share_count']
+                
+                if 'video_duration' in item.keys():
+                    video_duration = item['video_duration']
+                
+                if 'is_pinned' in item.keys():
+                    is_pinned = item['is_pinned']
+                
+                if caption == None:
+                        created_at = pd.to_datetime(item['taken_at'], unit='s', utc=False)
+                        id = item['id']
+                        hashtags = '[]'
+                        mentions = '[]'
+                        report_as_spam = False
+                        text = ''
+                else:
+                        created_at = pd.to_datetime(caption['created_at_utc'], unit='s', utc=False)
+                        id = caption['id']
+                        hashtags = str(caption['hashtags'])
+                        mentions = str(caption['mentions'])
+                        report_as_spam = caption['did_report_as_spam']
+                        text = caption['text']
+                        
+                post = Post(
+                    code= item['code'],
+                    comment_count= item['comment_count'],
+                    ig_play_count= ig_play_count,
+                    play_count= play_count,
+                    is_paid_partnership = is_paid_partnership,
+                    is_pinned= is_pinned,
+                    is_video= item['is_video'],
+                    like_and_view_counts_disabled= item['like_and_view_counts_disabled'],
+                    like_count= item['like_count'],
+                    media_name= item['media_name'],
+                    share_count= share_count,
+                    user_id= user['id'],
+                    username= user['username'],
+                    created_at_utc= created_at,
+                    id= id,
+                    text= text,
+                    did_report_as_spam= report_as_spam,
+                    hashtags= hashtags,
+                    mentions= mentions,
+                    video_duration= video_duration,
+                    carousel_media_count= carousel_media_count,
+                    carousel_media_ids= carousel_media_ids,
+                    last_update= pd.to_datetime('today', format="%Y-%m-%d", utc=True),
+                )
+                postsList.append(post)
+        
+        return postsList
 
 class InstagramDataFormater:
     scrapper_api: InstagramScrapperAPIDataFormater
@@ -128,6 +210,14 @@ class InstagramDataFormater:
     def parse_account_info(cls, service_name: str, response: Dict[str, Any]) -> InstagramAccountInfo:
         services_availables: Dict[str, Callable] = {
             "instagram_scrapper_api": InstagramScrapperAPIDataFormater().parse_account_info
+        }
+        
+        return services_availables[service_name](response)
+    
+    @classmethod
+    def parse_post_response(cls, service_name: str, response: Dict[str, Any]) -> InstagramAccountInfo:
+        services_availables: Dict[str, Callable] = {
+            "instagram_scrapper_api": InstagramScrapperAPIDataFormater().parse_post_response
         }
         
         return services_availables[service_name](response)
