@@ -60,11 +60,11 @@ class InstagramScrapperAPIDataFormater:
         return InstagramAccountInfo(
             name=data['full_name'],
             username=data['username'],
-            follower_count=data['follower_count'],
-            total_media=data['media_count'],
-            last_update=pd.to_datetime('today', format="%Y-%m-%d", utc=True),
+            followerCount=data['follower_count'],
+            totalMedia=data['media_count'],
+            lastUpdate=pd.to_datetime('today', format="%Y-%m-%d", utc=True),
             biography=data['biography'],
-            profile_pic=data['profile_pic_url_hd']
+            profilePic=data['profile_pic_url_hd']
         )
     
     @classmethod

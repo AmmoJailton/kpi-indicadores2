@@ -62,7 +62,7 @@ class InstagramDataManager:
             df_current_month: pd.DataFrame = dataset[username_mask & init_month_mask].reset_index(drop=True)
             initial_count_mask = df_current_month['lastUpdate'] == df_current_month['lastUpdate'].min()
             
-            if len(df_current_month[initial_count_mask]['follower_count']) < 1:
+            if len(df_current_month[initial_count_mask]['followerCount']) < 1:
                 initial_followers = account_info.follower_count
             else:
                 initial_followers = df_current_month[initial_count_mask]['followerCount'].values[0]
