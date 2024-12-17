@@ -86,7 +86,6 @@ class InstagramDataManager:
             headers = InstagramDataFormater().format_params_to_headers(current_service, service_params)
             posts_url = InstagramDataFormater().format_media_url(current_service, service_params)
             media_querystring = InstagramDataFormater().format_media_querystring(current_service, service_params)
-            
             logger.info(f"InstagramDataManager -> {username}")
             
             try:
@@ -145,6 +144,7 @@ class InstagramDataManager:
         }
         
         dataset.fillna(fillNaNColumnsDict, inplace=True)
+        dataset.drop_duplicates(subset=['code'], keep='first', inplace=True)
         
         logger.info("InstagramDataManager -> Update dataset - END")
         return dataset
