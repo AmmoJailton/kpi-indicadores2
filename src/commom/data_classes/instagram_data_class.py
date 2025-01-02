@@ -29,7 +29,7 @@ class InstagramMediaInfo:
 class InstagramAccountInfo:
     name: str # api -> full_name
     username: str
-    follower_count: Union[int, str]
+    followerCount: Union[int, str]
     totalMedia: Union[int, str]
     lastUpdate: Union[datetime.date, str, None]
     biography: Optional[str] = None

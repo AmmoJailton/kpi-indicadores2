@@ -63,12 +63,12 @@ class InstagramDataManager:
             initial_count_mask = df_current_month['lastUpdate'] == df_current_month['lastUpdate'].min()
             
             if len(df_current_month[initial_count_mask]['followerCount']) < 1:
-                initial_followers = account_info.follower_count
+                initial_followers = account_info.followerCount
             else:
                 initial_followers = df_current_month[initial_count_mask]['followerCount'].values[0]
             
-            df_account_info['deltaBruto'] = account_info.follower_count - initial_followers
-            df_account_info['deltaPorcentagem'] = (account_info.follower_count - initial_followers) / initial_followers
+            df_account_info['deltaBruto'] = account_info.followerCount - initial_followers
+            df_account_info['deltaPorcentagem'] = (account_info.followerCount - initial_followers) / initial_followers
             df_empty = pd.concat([df_empty, df_account_info])
 
         dataset = dataset.reset_index(drop=True)
