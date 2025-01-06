@@ -37,8 +37,12 @@ class InstagramMonitorService:
         
         logger.info(f"Fetch accounts info from instagram via API ")
         users_info = self.data_manager.fetch_accounts_infos(instagram_account_list=usernames)
+        updated_dataset = False
+        hasError = False
+        errorMessage = f""
         
         if debug_mode:
+            
             logger.info("Loading accounts info mock")
             # current_dataset = self.data_manager.load_current_account_history_dataset(source='local', file_path='accounts_info.pkl')
             
@@ -49,20 +53,57 @@ class InstagramMonitorService:
             # self.data_manager.save_current_account_history_dataset(source='local', data=current_dataset, path='accounts_info.pkl')
             
         else:
-            logger.info("Loading accounts info from BigQuery")
-            current_dataset = self.data_manager.load_current_account_history_dataset(source='bigquery', query=QUERY_INSTAGRAM_MONITOR)
+            if len(users_info) == len(usernames):
+                try:
+                    logger.info("Loading accounts info from BigQuery")
+                    current_dataset = self.data_manager.load_current_account_history_dataset(source='bigquery', query=QUERY_INSTAGRAM_MONITOR)
+                except Exception as e:
+                    logger.info("Failed when -> Loading accounts info from BigQuery <-")
+                    hasError = True
+                    errorMessage = e
+                    
+                try:
+                    logger.info("Updating accounts info")
+                    current_dataset = self.data_manager.update_accounts_history_dataset(dataset=current_dataset, account_info_list=users_info)
+                except Exception as e:
+                    logger.info("Failed when -> Updating accounts info <-")
+                    hasError = True
+                    errorMessage = e
+                
+                try:
+                    logger.info("Saving accounts info to BigQuery")
+                    updated_dataset = self.data_manager.save_current_account_history_dataset(source='bigquery', dataset_id='innovation_dataset', table_id='instagram_accounts_history', dataframe=current_dataset)
+                except Exception as e:
+                    logger.info("Failed when -> Saving accounts info to BigQuery <-")
+                    hasError = True
+                    errorMessage = e
+                    
+        if hasError:
+            email_subject = 'Falha ao atualizar seguidores do instagram'
+            recipients=['joao.garcia@ammovarejo.com.br']
+            email_body = errorMessage
+            email_properties = IEmailProperties(
+                subject=email_subject,
+                recipient=recipients,
+                body=email_body
+            )
             
-            logger.info("Updating accounts info")
-            current_dataset = self.data_manager.update_accounts_history_dataset(dataset=current_dataset, account_info_list=users_info)
+            logger.info("Send email")
             
-            logger.info("Saving accounts info to BigQuery")
-            self.data_manager.save_current_account_history_dataset(source='bigquery', dataset_id='innovation_dataset', table_id='instagram_accounts_history', dataframe=current_dataset)
+            self.messenger.send_message(
+                channel='email',
+                email_properties=email_properties
+            )
+        
+        usernamesOk = []
+        for u in users_info:
+            usernamesOk.append(u.username)
         
         return {
             'result': 'Success',
             'message': {
-                'usernames': usernames,
-                'updated_dataset': True
+                'usernames': usernamesOk,
+                'updated_dataset': updated_dataset
             }
         }
     

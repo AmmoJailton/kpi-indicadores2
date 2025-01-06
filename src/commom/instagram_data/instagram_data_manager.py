@@ -28,14 +28,15 @@ class InstagramDataManager:
             user_querystring: Dict[str, str] = InstagramDataFormater().format_user_querystring(service_name=current_service, params=params)
             
             try:
-                logger.info(f"InstagramDataManager -> Get account info: {user}")
-                logger.info(f"user_url:[  {user_url}  ]  headers:[  {headers}  ]  user_querystring:[  {user_querystring}  ]")
+                logger.info(f"InstagramDataManager -> Get account info -> {user}")
                 response = requests.get(url=user_url, headers=headers, params=user_querystring)
                 time.sleep(3)
            
             except Exception as e:
-                logger.info(f"InstagramDataManager -> Failed to get info: {user}")
+                logger.info(f"InstagramDataManager -> Failed to get info for user: {user}")
+                logger.info(f"{user_url}/username_or_id_or_url={user}  || headers:{headers}")
                 logger.error(e)
+                
 
             try:
                 logger.info(f"InstagramDataManager -> Parse info: {user}")
