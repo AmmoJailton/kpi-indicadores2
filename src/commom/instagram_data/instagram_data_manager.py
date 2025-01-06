@@ -17,10 +17,9 @@ class InstagramDataManager:
         self.data_handler = DataHandler()
     
     def fetch_accounts_infos(self, instagram_account_list: List[str]) -> List[InstagramAccountInfo]:
-        logger.info("InstagramDataManager -> Fetching user info - init")
         current_service = self.services_availables[0]
         account_info: List[InstagramAccountInfo] = []
-        logger.info(f"InstagramDataManager -> Service: {current_service}")
+        logger.info(f"InstagramDataManager -> Fetching user info - init - {current_service}")
         
         for user in instagram_account_list:
             params: IRequestInstagramParams = InstagramDataFormater().get_service_params(service_name=current_service, username=user)
@@ -29,13 +28,24 @@ class InstagramDataManager:
             user_querystring: Dict[str, str] = InstagramDataFormater().format_user_querystring(service_name=current_service, params=params)
             
             try:
+                logger.info(f"InstagramDataManager -> Get account info: {user}")
                 response = requests.get(url=user_url, headers=headers, params=user_querystring)
+                time.sleep(3)
+           
+            except Exception as e:
+                logger.info(f"InstagramDataManager -> Failed to get info: {user}")
+                logger.error(e)
+
+            try:
+                logger.info(f"InstagramDataManager -> Parse info: {user}")
                 parsed_response:InstagramAccountInfo = InstagramDataFormater().parse_account_info(service_name=current_service, response=response.json())
                 account_info.append(parsed_response)
-                time.sleep(1)
+            
             except Exception as e:
-                logger.info(f"InstagramDataManager -> Service not available: {current_service}")
+                logger.info(f"InstagramDataManager -> Parse failed for user: {user}")
+                logger.info(f"InstagramDataManager -> Parse failed response: {response.json()}")
                 logger.error(e)
+                
                 
         logger.info("InstagramDataManager -> Fetching user info - end")
         return account_info

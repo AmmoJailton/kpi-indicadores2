@@ -39,14 +39,14 @@ class InstagramMonitorService:
         users_info = self.data_manager.fetch_accounts_infos(instagram_account_list=usernames)
         
         if debug_mode:
-            logger.info("Loading accounts info from Pickle")
-            current_dataset = self.data_manager.load_current_account_history_dataset(source='local', file_path='accounts_info.pkl')
+            logger.info("Loading accounts info mock")
+            # current_dataset = self.data_manager.load_current_account_history_dataset(source='local', file_path='accounts_info.pkl')
             
-            logger.info("Updating accounts info")
-            current_dataset = self.data_manager.update_accounts_history_dataset(dataset=current_dataset, account_info_list=users_info)
+            logger.info("Updating accounts info mock")
+            # current_dataset = self.data_manager.update_accounts_history_dataset(dataset=current_dataset, account_info_list=users_info)
             
-            logger.info("Saving accounts info to Pickle")
-            self.data_manager.save_current_account_history_dataset(source='local', data=current_dataset, path='accounts_info.pkl')
+            logger.info("Saving accounts info mock")
+            # self.data_manager.save_current_account_history_dataset(source='local', data=current_dataset, path='accounts_info.pkl')
             
         else:
             logger.info("Loading accounts info from BigQuery")
