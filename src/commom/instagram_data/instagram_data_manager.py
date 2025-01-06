@@ -29,6 +29,7 @@ class InstagramDataManager:
             
             try:
                 logger.info(f"InstagramDataManager -> Get account info: {user}")
+                logger.info(f"user_url:[  {user_url}  ]  headers:[  {headers}  ]  user_querystring:[  {user_querystring}  ]")
                 response = requests.get(url=user_url, headers=headers, params=user_querystring)
                 time.sleep(3)
            
