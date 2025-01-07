@@ -172,7 +172,7 @@ class InstagramMonitorService:
             }
         }
     
-    def update_posts(self, listOfUsernames, debugMode: bool = True):
+    def update_posts(self, listOfUsernames, debug_mode: bool = True):
         logger.info('SERVICE -> Updates posts - START')
         
         logger.info('SERVICE -> Get from API - START')
@@ -180,14 +180,18 @@ class InstagramMonitorService:
         logger.info('SERVICE -> Get from API - END')
         
         
-        if debugMode:
+        if debug_mode:
             logger.info('SERVICE -> DEBUG MODE')
-            df_history : pd.DataFrame = pd.read_pickle('instagram_posts.pkl')
+            # logger.info('SERVICE -> Read BQ mock')
+            # logger.info('SERVICE -> Update dataset with current + new posts mock')
+            # logger.info('SERVICE -> Write BQ mock')
+            # df_history : pd.DataFrame = pd.read_pickle('instagram_posts.pkl')
             
-            datasetNew = self.data_manager.update_posts_dataset(df_history, postsList)
+            # datasetNew = self.data_manager.update_posts_dataset(df_history, postsList)
             
-            self.data_manager.data_handler.write_to_pickle(datasetNew, 'instagram_posts.pkl')
-        
+            # self.data_manager.data_handler.write_to_pickle(datasetNew, 'instagram_posts.pkl')
+            datasetNew = pd.DataFrame()
+            
         else:
             logger.info('SERVICE -> APPLICATION MODE')
             
