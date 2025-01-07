@@ -39,7 +39,7 @@ class InstagramMonitorService:
         users_info = self.data_manager.fetch_accounts_infos(instagram_account_list=usernames)
         updated_dataset = False
         hasError = False
-        errorMessage = f""
+        errorMessage = ""
         
         if debug_mode:
             
@@ -79,7 +79,7 @@ class InstagramMonitorService:
                     errorMessage = "Failed when -> Saving accounts info to BigQuery <-"+ e
                     
         if hasError:
-            email_subject = 'Falha ao atualizar postagens do instagram'
+            email_subject = 'Falha ao atualizar informações das contas do instagram'
             recipients=['joao.garcia@ammovarejo.com.br']
             email_body = errorMessage
             email_properties = IEmailProperties(
@@ -179,7 +179,7 @@ class InstagramMonitorService:
         postsList = self.data_manager.fetch_user_media_info(listOfUsernames)
         logger.info('SERVICE -> Get from API - END')
         hasError = False
-        errorMessage = f""
+        errorMessage = ""
         
         if debug_mode:
             logger.info('SERVICE -> DEBUG MODE')
