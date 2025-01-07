@@ -106,8 +106,9 @@ class InstagramDataManager:
                 response = res.json()
 
             except Exception as e:
+                logger.info(f"InstagramDataManager -> Failed to get posts for user: {username}")
+                logger.info(f"{posts_url}/username_or_id_or_url={posts_url}  || headers:{headers}")
                 logger.error(e)
-                logger.info(f"InstagramDataManager -> Service not available: {current_service}")
             
             if response:
                 try:
