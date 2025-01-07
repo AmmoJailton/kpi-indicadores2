@@ -92,7 +92,7 @@ class InstagramMonitorController(IEndpoint):
             }
         
         try:
-            res = self.instagram_service.update_posts(usernames, False)
+            res = self.instagram_service.update_posts(usernames, body.debug_mode)
 
             if not res.empty:
                 result = {
