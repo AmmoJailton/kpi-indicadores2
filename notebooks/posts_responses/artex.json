@@ -449,18 +449,6 @@
                 ]
             },
             
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             {
                 "boost_unavailable_identifier": null,
                 "boost_unavailable_reason": null,
@@ -1346,19 +1334,6 @@
                 "video_sticker_locales": []
             },
 
-
-
-
-
-
-
-
-
-
-
-
-
-
             {
                 "boost_unavailable_identifier": null,
                 "boost_unavailable_reason": null,
@@ -2242,6 +2217,7 @@
                 },
                 "video_sticker_locales": []
             },
+
             {
                 "boost_unavailable_identifier": null,
                 "boost_unavailable_reason": null,
@@ -3397,6 +3373,7 @@
                 },
                 "video_sticker_locales": []
             },
+
             {
                 "are_remixes_crosspostable": true,
                 "avatar_stickers": [],
@@ -3808,6 +3785,7 @@
                     }
                 ]
             },
+
             {
                 "are_remixes_crosspostable": true,
                 "avatar_stickers": [],
@@ -4567,6 +4545,7 @@
                     }
                 ]
             },
+
             {
                 "are_remixes_crosspostable": true,
                 "avatar_stickers": [],
@@ -5343,6 +5322,7 @@
                     }
                 ]
             },
+
             {
                 "are_remixes_crosspostable": true,
                 "avatar_stickers": [],
@@ -5754,6 +5734,7 @@
                     }
                 ]
             },
+
             {
                 "boost_unavailable_identifier": null,
                 "boost_unavailable_reason": null,
@@ -6360,6 +6341,7 @@
                 },
                 "video_sticker_locales": []
             },
+
             {
                 "boost_unavailable_identifier": null,
                 "boost_unavailable_reason": null,
@@ -6933,6 +6915,7 @@
                 },
                 "video_sticker_locales": []
             },
+
             {
                 "are_remixes_crosspostable": true,
                 "avatar_stickers": [],
@@ -7354,6 +7337,7 @@
                     }
                 ]
             },
+            
             {
                 "boost_unavailable_identifier": null,
                 "boost_unavailable_reason": null,
