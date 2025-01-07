@@ -1,4 +1,3 @@
-from sys import exception
 from typing import Any, List, Optional
 import pandas as pd
 from commom.database.queries.query_instagram_posts import QUERY_INSTAGRAM_POSTS
