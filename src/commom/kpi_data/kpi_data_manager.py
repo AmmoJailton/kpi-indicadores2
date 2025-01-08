@@ -281,9 +281,9 @@ class KpiDataManager:
                 how="left",
             )
 
-        if kpi_type == "day":
+        if kpi_type == "Dia":
             yesterday_date = datetime.datetime.today() - datetime.timedelta(days=1)
-            df_kpis["day"] = yesterday_date.day
+            df_kpis["Dia"] = yesterday_date.day
 
         return df_kpis
 
