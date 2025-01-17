@@ -2,6 +2,7 @@ QUERY_METAS = """
 SELECT
   EXTRACT(YEAR FROM dia) AS year,
   EXTRACT(MONTH FROM dia) AS month,
+  EXTRACT(DAY FROM dia) AS day,
   dia AS date,
   loja,
   cpf_vendedor,
@@ -10,7 +11,7 @@ SELECT
 
 FROM `projetoomni.isa_workspace.fat_metas`
 
-WHERE EXTRACT(YEAR FROM dia) = 2024 AND
+WHERE EXTRACT(YEAR FROM dia) >= 2024 AND
 tipo_meta IN ('Meta Loja PDV', 'Meta Vendedor PDV') AND
 dia <= CURRENT_DATE()  - 1
 """

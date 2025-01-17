@@ -28,7 +28,7 @@ ON
 WHERE
   EXTRACT(YEAR
   FROM
-    createdAt) = 2024
+    createdAt) >= 2024
 GROUP BY
   1, 2, 3, 4, 5, 6, 7, 8
 """

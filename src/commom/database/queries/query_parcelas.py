@@ -6,6 +6,6 @@ SELECT
   displaycode,
   AVG(qtd_parcelado) AS n_parcelas,
   FROM `projetoomni.isa_workspace.fat_pagamento`
-WHERE EXTRACT(YEAR FROM data_emissao_NF) = 2024
+WHERE EXTRACT(YEAR FROM data_emissao_NF) >= 2024
 GROUP BY 1,2,3,4
 """
