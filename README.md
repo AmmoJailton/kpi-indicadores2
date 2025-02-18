@@ -6,28 +6,29 @@ Essa API tem como o objetivo servir o time de analytics da AMMO.
 
 KPI -> O relatório KPI é enviado diariamente para o time de operações
 
-├── Fluxo 
-│   ├── Dados extraídos do BQ 
-│   ├── Parse dos dados
-│   ├── Formatação dos resultados 
-│   ├── Envio por email
+    ├── Fluxo 
+    │   ├── Dados extraídos do BQ 
+    │   ├── Parse dos dados
+    │   ├── Formatação dos resultados 
+    │   ├── Envio por email
 
 
 Instagram monitor -> O monitor de contas do Instagram. Tem como objetivo saber seguidores e postagens dos usuários.
 
-├── Fluxo 
-│   ├── Usando a API do RapidApi busca os dados das contas 
-│   ├── Parse dos dados
-│   ├── Salva os dados no BQ
-│   ├── Envio por email
+    ├── Fluxo 
+    │   ├── Usando a API do RapidApi busca os dados das contas 
+    │   ├── Parse dos dados
+    │   ├── Salva os dados no BQ
+    │   ├── Envio por email
 
 
 Login Artex -> Checa se o login está correto. Função não usada.
 
-├── Fluxo 
+    ├── Fluxo 
 
 Whatsapp service -> Estudo sobre disparo de mensagens pelo whats app
-Recomendação -> Usar alguma API diferente da botmaker.
+    
+    ├── Recomendação -> Usar alguma API diferente da botmaker.
 
 
 ## Instalação das ferramentas necessárias
