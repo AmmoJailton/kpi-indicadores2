@@ -164,4 +164,22 @@ Project Organization
 
 --------
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+Obs: o fluxo de deploy está descrito no github/workflows. A pipeline é montada com a arquivo yaml. Os serviços usados são do gcp.
+
+O deploy é feito via cli pelo github actions. O projeto é inserido dentro de uma imagem docker com o entrypoint visível, é feito o upload da imagem para o artifact registry, a partir daí o cloud run é atualizado para ler a docker e disponibilizar os serviços.
+
+As variáveis de ambiente foram compartilhadas com o Chiesa e estão no backup do drive.
+
+EMAIL_PASSWORDS -> senhas do time de inovação
+EMAIL_SENDER_ACCOUNT -> email do time de inovação
+GCLOUD_RUN_REGION -> a região do google cloud onde o projeto está online
+GCP_APP_NAME_BASE -> app base name
+GCP_ARTIFACT_REGISTRY_REGION -> região do artifact registry onde a imagem docker está
+GCP_CREDENTIALS_SECRET -> secret da gpc em base64
+GCP_CREDENTIALS_SECRET_DECODED -> secret da gpc em json
+GCP_CREDENTIALS_SECRET_ENCODED -> secret da gpc em base64
+GCP_IMAGE_NAME -> nome da imagem docker do projeto
+GCP_PROJECT_ID -> id do projeto no gcp
+GOOGLE_CREDENTIALS_FILEPATH -> endereço virtual de um arquivo (não sei pq mas funciona)
+INSTAGRAM_SCRAPPER_API_HOST -> host do scrapper api
+INSTAGRAM_SCRAPPER_API_TOKEN -> token da scrapper api
