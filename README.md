@@ -4,6 +4,29 @@
 
 Essa API tem como o objetivo servir o time de analytics da AMMO.
 
+KPI -> O relatório KPI é enviado diariamente para o time de operações
+├── Fluxo 
+│   ├── Dados extraídos do BQ 
+│   ├── Parse dos dados
+│   ├── Formatação dos resultados 
+│   ├── Envio por email
+
+
+Instagram monitor -> O monitor de contas do Instagram. Tem como objetivo saber seguidores e postagens dos usuários.
+├── Fluxo 
+│   ├── Usando a API do RapidApi busca os dados das contas 
+│   ├── Parse dos dados
+│   ├── Salva os dados no BQ
+│   ├── Envio por email
+
+
+Login Artex -> Checa se o login está correto. Função não usada.
+├── Fluxo 
+
+Whatsapp service -> Estudo sobre disparo de mensagens pelo whats app
+Recomendação -> Usar alguma API diferente da botmaker.
+
+
 ## Instalação das ferramentas necessárias
 
 Instale o [Homebrew](https://brew.sh/)
@@ -121,49 +144,17 @@ poetry run uvicorn src.analytics_api.api.main:fast_api --port 8080 --host 0.0.0.
 Project Organization
 ------------
 
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
+    ├── .github
+    ├── docs               <- Not used
+    ├── notebooks          <- Python notebooks used for discovery
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
+    │   ├── commom         <- Arquivos comuns aos endpoints
     │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
+    │   ├── innovation_api <- Arquivos principais dos endpoints
     │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
+    │   ├── innovation_messenger <- Arquivos relacionados ao disparador de email
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
 
 
