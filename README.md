@@ -183,3 +183,10 @@ GCP_PROJECT_ID -> id do projeto no gcp
 GOOGLE_CREDENTIALS_FILEPATH -> endereço virtual de um arquivo (não sei pq mas funciona)
 INSTAGRAM_SCRAPPER_API_HOST -> host do scrapper api
 INSTAGRAM_SCRAPPER_API_TOKEN -> token da scrapper api
+
+
+Para obter algumas envs é interessante ter acesso ao gcp [gcp](https://console.cloud.google.com/artifacts?referrer=search&hl=pt&project=projetoomni) . Encontre o nome do projeto GCP_APP_NAME, região GCP_ARTIFACT_REGISTRY_REGION, nome da imagem GCP_IMAGE_NAME, e id do projeto GCP_PROJECT_ID.
+
+O cloud run [cloud run](https://console.cloud.google.com/run?referrer=search&hl=pt&project=projetoomni) serve para armazenar sites estáticos ou imagens docker ou apis. Para encontrar as envs relacionadas ao cloud run basta acessar e encontrar o nome do projeto. 
+
+O padrão é que dentro da gcp tudo siga a nomenclatura do time "innovation_alguma_coisa" ou "alguma_coisa_innovation" etc , e para os serviços seguimos com o mesmo nome do repositório.
