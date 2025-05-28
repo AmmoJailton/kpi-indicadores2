@@ -190,3 +190,4 @@ Para obter algumas envs é interessante ter acesso ao gcp [gcp](https://console.
 O cloud run [cloud run](https://console.cloud.google.com/run?referrer=search&hl=pt&project=projetoomni) serve para armazenar sites estáticos ou imagens docker ou apis. Para encontrar as envs relacionadas ao cloud run basta acessar e encontrar o nome do projeto. 
 
 O padrão é que dentro da gcp tudo siga a nomenclatura do time "innovation_alguma_coisa" ou "alguma_coisa_innovation" etc , e para os serviços seguimos com o mesmo nome do repositório.
+# indicadores
