@@ -36,3 +36,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.taskipy.tasks]
 start = "uvicorn src.innovation_api.api.main:fast_api --port 8080 --host 0.0.0.0 --reload"
+        

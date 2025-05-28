@@ -114,8 +114,9 @@ class ReportGenerator(BaseGenerator):
         if store.regional.lower() not in store.emails_regionais():
             return []
 
-        email_vinicius = "vinicius.voltolini@ammovarejo.com.br"
-        return [store.email, store.email_regional, email_vinicius]
+        #email_vinicius = "vinicius.voltolini@ammovarejo.com.br"
+        #return [store.email, store.email_regional, email_vinicius]
+        return ['jailton.nascimento@coteminas.com.br']
 
     @staticmethod
     def create_kpi_email_body(store: StoreInfo, file_name: str, report_date: str) -> str:

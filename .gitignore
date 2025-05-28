@@ -93,3 +93,8 @@ target/
 env_variables.sh
 set_env.sh
 poetry.lock
+
+venv/
+.kpi/
+.kpi/
+kpi/
