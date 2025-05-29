@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Callable, List, Optional
 
 
+
 @dataclass
 class IEndpointConfig:
     route: str
