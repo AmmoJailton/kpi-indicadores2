@@ -7,6 +7,7 @@ messenger = Messenger()  # Instancie o Messenger
 daily_report_service = DailyReportService(messenger=messenger)  # Passe o messenger
 from innovation_api import __version__
 
+
 fast_api = FastAPI()
 
 @fast_api.get("/", tags=["Get Info"])
