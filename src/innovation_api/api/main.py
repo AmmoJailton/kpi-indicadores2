@@ -50,6 +50,7 @@ def send_kpi_daily_mail(
     )
     return daily_report_service.send_kpi_daily_mail(body=body)
 
+
 @fast_api.post("/dailyreport-all", tags=["KPI report"])
 def send_kpi_daily_mail_all(debug_info: dict = Body(...)):
     return daily_report_service.send_kpi_daily_mail_all(body=Body)
